@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LHY Space — 모든 걸 할 수 있는 공간</title>
+<meta name="description" content="일하고, 쉬고, 놀고, 대화하는 모든 것을 한곳에서. LHY Space.">
+<meta name="theme-color" content="#07142F">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap">
+<style>
+:root{
+  --deep:#07142F; --navy:#0B1F4D; --cobalt:#2F6BFF; --sky:#6FB3FF; --ice:#EAF4FF;
+  --glass:rgba(255,255,255,.085); --glass-line:rgba(255,255,255,.22);
+  --text:#EAF4FF; --muted:rgba(234,244,255,.68);
+  --display:'Sora','Pretendard Variable',Pretendard,system-ui,sans-serif;
+  --body:'Pretendard Variable',Pretendard,-apple-system,'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0}
+html{background:var(--deep);color-scheme:dark}
+body{
+  min-height:100vh; font-family:var(--body); color:var(--text); line-height:1.6;
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  background:
+    radial-gradient(900px 600px at 82% 8%, rgba(47,107,255,.55), transparent 60%),
+    radial-gradient(700px 520px at 8% 42%, rgba(111,179,255,.28), transparent 62%),
+    radial-gradient(800px 600px at 70% 96%, rgba(30,70,200,.5), transparent 60%),
+    linear-gradient(180deg,#07142F 0%,#0A1B45 55%,#07142F 100%);
+  background-attachment:fixed;
+  overflow-x:hidden;
+}
+body::before{
+  content:""; position:fixed; inset:0; pointer-events:none; opacity:.55;
+  background-image:
+    radial-gradient(1.2px 1.2px at 12% 18%, #fff, transparent),
+    radial-gradient(1px 1px at 28% 72%, #cfe6ff, transparent),
+    radial-gradient(1.4px 1.4px at 46% 30%, #fff, transparent),
+    radial-gradient(1px 1px at 63% 84%, #cfe6ff, transparent),
+    radial-gradient(1.2px 1.2px at 78% 52%, #fff, transparent),
+    radial-gradient(1px 1px at 91% 22%, #cfe6ff, transparent),
+    radial-gradient(1px 1px at 36% 8%, #fff, transparent),
+    radial-gradient(1.2px 1.2px at 6% 90%, #fff, transparent);
+}
+.wrap{position:relative; max-width:1120px; margin:0 auto; padding:0 24px}
+
+header{display:flex; align-items:center; justify-content:space-between; padding:22px 0}
+.brand{display:flex; align-items:center; gap:10px; text-decoration:none; color:inherit}
+.brand img{width:34px; height:34px}
+.brand b{font:700 18px/1 var(--display); letter-spacing:.01em}
+.brand span{font:400 18px/1 var(--display); opacity:.75; margin-left:-4px}
+.status{
+  font-size:13px; padding:7px 14px; border-radius:999px; color:var(--ice);
+  background:var(--glass); border:1px solid var(--glass-line);
+  backdrop-filter:blur(18px) saturate(160%); -webkit-backdrop-filter:blur(18px) saturate(160%);
+}
+
+.hero{display:grid; grid-template-columns:1.1fr .9fr; align-items:center; gap:24px; padding:48px 0 72px}
+.hero h1{font:700 clamp(40px,6.4vw,84px)/1.08 var(--display); letter-spacing:-.02em; word-break:keep-all}
+.hero h1 .ko{display:block; font-family:var(--body); font-weight:800; letter-spacing:-.035em}
+.hero p{margin-top:22px; max-width:30em; font-size:clamp(16px,1.6vw,19px); color:var(--muted); word-break:keep-all}
+.orb{width:min(100%,460px); justify-self:center; aspect-ratio:1; animation:float 7s ease-in-out infinite}
+.orb svg{width:100%; height:100%; overflow:visible; filter:drop-shadow(0 30px 60px rgba(20,60,200,.55)); transition:transform .25s ease-out}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+
+.zones{display:grid; grid-template-columns:repeat(12,1fr); gap:18px; padding-bottom:80px}
+.zone{
+  position:relative; min-height:200px; padding:26px 28px; display:flex; flex-direction:column; justify-content:space-between; gap:18px;
+  border-radius:30px; border:1px solid var(--glass-line); overflow:hidden;
+  background:linear-gradient(145deg,rgba(255,255,255,.13),rgba(255,255,255,.05));
+  backdrop-filter:blur(26px) saturate(170%); -webkit-backdrop-filter:blur(26px) saturate(170%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.55), inset 0 -1px 0 rgba(255,255,255,.08), 0 24px 50px rgba(2,10,40,.38);
+}
+.zone::before{
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background:radial-gradient(120% 80% at 0% 0%, rgba(255,255,255,.22), transparent 45%);
+}
+.zone svg{width:38px; height:38px; stroke:var(--ice); fill:none; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; position:relative}
+.zone h2{font:700 26px/1.2 var(--body); letter-spacing:-.02em; position:relative}
+.zone p{margin-top:6px; color:var(--muted); font-size:15px; max-width:26em; word-break:keep-all; position:relative}
+.zone .tag{
+  position:relative; align-self:flex-start; font-size:12.5px; padding:4px 11px; border-radius:999px;
+  background:rgba(111,179,255,.18); border:1px solid rgba(111,179,255,.4); color:#CFE6FF;
+}
+.z-work{grid-column:span 7; min-height:240px}
+.z-rest{grid-column:span 5}
+.z-game{grid-column:span 5}
+.z-talk{grid-column:span 7; min-height:240px}
+
+footer{padding:0 0 40px; text-align:center; color:var(--muted); font-size:13px}
+
+:focus-visible{outline:2px solid var(--sky); outline-offset:3px; border-radius:8px}
+
+@media (max-width:820px){
+  .hero{grid-template-columns:1fr; padding:20px 0 48px; text-align:left}
+  .orb{order:-1; width:min(70%,300px); justify-self:start}
+  .zones{gap:14px}
+  .z-work,.z-rest,.z-game,.z-talk{grid-column:1 / -1; min-height:170px}
+}
+@media (prefers-reduced-motion:reduce){ .orb{animation:none} .orb svg{transition:none} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="/" aria-label="LHY Space 홈">
+      <img src="/logo-mark.svg" alt="">
+      <b>LHY</b><span>Space</span>
+    </a>
+    <div class="status">오픈 준비 중</div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div>
+        <h1>LHY Space<span class="ko">모든 걸 할 수 있는 공간</span></h1>
+        <p>일하고, 쉬고, 놀고, 대화하는 걸 한곳에서 할 수 있게 하나씩 문을 열고 있어요.</p>
+      </div>
+      <div class="orb" id="orb">
+        <svg viewBox="0 0 512 512" role="img" aria-label="LHY Space 로고">
+          <defs>
+            <radialGradient id="h-orb" cx="36%" cy="30%" r="80%">
+              <stop offset="0" stop-color="#D6EEFF"/><stop offset=".28" stop-color="#6FB3FF"/>
+              <stop offset=".65" stop-color="#2F6BFF"/><stop offset="1" stop-color="#0B2A8A"/>
+            </radialGradient>
+            <linearGradient id="h-rim" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset=".5" stop-color="#fff" stop-opacity=".05"/>
+              <stop offset="1" stop-color="#9ED0FF" stop-opacity=".6"/>
+            </linearGradient>
+            <linearGradient id="h-ring" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#9ED0FF" stop-opacity=".15"/><stop offset=".5" stop-color="#fff" stop-opacity=".95"/>
+              <stop offset="1" stop-color="#9ED0FF" stop-opacity=".15"/>
+            </linearGradient>
+            <radialGradient id="h-spec" cx="50%" cy="50%" r="50%">
+              <stop offset="0" stop-color="#fff" stop-opacity=".85"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
+            </radialGradient>
+            <filter id="h-glow" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="7"/></filter>
+          </defs>
+          <g id="tilt" style="transform-origin:256px 256px">
+            <g transform="rotate(-22 256 256)">
+              <path d="M26 256A230 70 0 0 1 486 256" fill="none" stroke="url(#h-ring)" stroke-width="10" stroke-linecap="round" opacity=".5"/>
+              <g>
+                <circle r="26" fill="#9ED0FF" filter="url(#h-glow)"/>
+                <circle r="15" fill="#fff"/>
+                <animateMotion dur="10s" repeatCount="indefinite" path="M26 256A230 70 0 0 0 486 256A230 70 0 0 0 26 256" calcMode="linear"/>
+                <animate attributeName="opacity" dur="10s" repeatCount="indefinite" calcMode="discrete" values="0;1" keyTimes="0;.5"/>
+              </g>
+            </g>
+            <circle cx="256" cy="256" r="140" fill="url(#h-orb)"/>
+            <path d="M168 336A116 116 0 0 0 344 336" fill="none" stroke="#9ED0FF" stroke-width="6" stroke-linecap="round" opacity=".4"/>
+            <ellipse cx="212" cy="200" rx="62" ry="34" transform="rotate(-30 212 200)" fill="url(#h-spec)"/>
+            <circle cx="256" cy="256" r="139" fill="none" stroke="url(#h-rim)" stroke-width="3"/>
+            <g transform="rotate(-22 256 256)">
+              <path d="M26 256A230 70 0 0 0 486 256" fill="none" stroke="url(#h-ring)" stroke-width="12" stroke-linecap="round"/>
+              <g>
+                <circle r="26" fill="#9ED0FF" filter="url(#h-glow)"/>
+                <circle r="15" fill="#fff"/>
+                <animateMotion dur="10s" repeatCount="indefinite" path="M26 256A230 70 0 0 0 486 256A230 70 0 0 0 26 256" calcMode="linear"/>
+                <animate attributeName="opacity" dur="10s" repeatCount="indefinite" calcMode="discrete" values="1;0" keyTimes="0;.5"/>
+              </g>
+            </g>
+          </g>
+        </svg>
+      </div>
+    </section>
+
+    <section class="zones" aria-label="공간 목록">
+      <article class="zone z-work">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="6" y="8" width="28" height="24" rx="6"/><path d="M12 16h10M12 22h16M12 27h7"/></svg>
+        <div><h2>작업</h2><p>번역, 맞춤법, 파일 변환처럼 바로 꺼내 쓰는 도구를 모아둘 공간이에요.</p></div>
+        <span class="tag">준비 중</span>
+      </article>
+      <article class="zone z-rest">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M27 8a13 13 0 1 0 6 21A14 14 0 0 1 27 8z"/><path d="M30 6v4M28 8h4"/></svg>
+        <div><h2>여가</h2><p>쉬어가며 보고, 듣고, 기록하는 공간이에요.</p></div>
+        <span class="tag">준비 중</span>
+      </article>
+      <article class="zone z-game">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="5" y="12" width="30" height="18" rx="9"/><path d="M13 17v8M9 21h8M26 19.5v.1M30 23v.1"/></svg>
+        <div><h2>게임</h2><p>짧게 즐기고 랭킹으로 겨루는 공간이에요.</p></div>
+        <span class="tag">준비 중</span>
+      </article>
+      <article class="zone z-talk">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M7 11a5 5 0 0 1 5-5h16a5 5 0 0 1 5 5v11a5 5 0 0 1-5 5H18l-7 6v-6a5 5 0 0 1-4-5z"/><path d="M14 15h12M14 20h7"/></svg>
+        <div><h2>소통</h2><p>로그인하고 다른 사람과 이야기를 나누는 공간이에요.</p></div>
+        <span class="tag">준비 중</span>
+      </article>
+    </section>
+  </main>
+
+  <footer>© 2026 LHY Space</footer>
+</div>
+
+<script>
+(function(){
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var svg = document.querySelector('#orb svg');
+  if (reduce && svg.pauseAnimations) svg.pauseAnimations();
+  var tilt = document.getElementById('tilt');
+  if (!reduce && matchMedia('(pointer:fine)').matches) {
+    addEventListener('pointermove', function(e){
+      var x = (e.clientX / innerWidth - .5), y = (e.clientY / innerHeight - .5);
+      tilt.style.transform = 'rotate(' + (x * 8) + 'deg) translate(' + (x * 10) + 'px,' + (y * 10) + 'px)';
+    }, {passive:true});
+  }
+  if ('serviceWorker' in navigator) {
+    addEventListener('load', function(){ navigator.serviceWorker.register('/sw.js').catch(function(){}); });
+  }
+})();
+</script>
+</body>
+</html>
