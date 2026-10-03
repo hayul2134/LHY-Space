@@ -125,8 +125,8 @@ body{background:
   <button class="glass" id="back" type="button">은하 밖으로</button>
 </header>
 <aside id="tag" aria-hidden="true">
-  <svg viewBox="0 0 26 100"><path d="M6 3 L14 20 L8 48 L16 76 L10 97"/><path d="M8 48 L22 40"/>
-    <circle cx="6" cy="3" r="1.1"/><circle cx="14" cy="20" r="2"/><circle cx="8" cy="48" r="2"/><circle cx="22" cy="40" r="1.1"/><circle cx="16" cy="76" r="2"/><circle cx="10" cy="97" r="1.1"/></svg>
+  <svg viewBox="0 0 26 100"><path d="M6 3 L14 20 L8 48 L16 76 L10 97"/><path d="M8 48 L1 41"/>
+    <circle cx="6" cy="3" r="1.1"/><circle cx="14" cy="20" r="2"/><circle cx="8" cy="48" r="2"/><circle cx="1" cy="41" r="1.1"/><circle cx="16" cy="76" r="2"/><circle cx="10" cy="97" r="1.1"/></svg>
   <p><span>YOUR</span><span>OWN</span><span>SPACE</span><em id="tagc"></em></p>
 </aside>
 <div id="labels"></div>
@@ -383,7 +383,7 @@ function burst(cx,cy,R,u,tilt){
 }
 
 /* 화면 가장자리의 가까운 별 */
-var FL=[[.07,.22,1],[.93,.26,.8],[.14,.8,.9],[.88,.84,1.1],[.3,.9,.6],[.75,.1,.7],[.05,.55,.6],[.96,.58,.6]];
+var FL=[[.93,.26,.8],[.14,.8,.9],[.88,.84,1.1],[.3,.9,.6],[.75,.1,.7],[.05,.55,.6],[.96,.58,.6]];
 function flares(a,t){
   if(a<.01)return;
   ctx.save();ctx.globalCompositeOperation='lighter';
