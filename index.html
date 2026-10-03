@@ -400,7 +400,7 @@ function frame(now){
   burst(cx,cy,mainR*dpr,introT,.52);
   if(a1>0){
     var tl=.52+.1*e; flares(a1*(1-sm(.05,.3,e)),t);
-    drawGal(main,cx,cy,mainR*dpr*zoom*ip*(1+.015*hoverMain),tl+(reduce?0:py3*.05*(1-e)),-.35+(reduce?0:px3*.04*(1-e)),reduce?.4:.4-t*.045+9*Math.pow(1-introT,3),a1*(1+.18*hoverMain),1+Math.min(zoom-1,3)*.3,t,1-sm(.1,.55,e));
+    drawGal(main,cx,cy,mainR*dpr*zoom*ip*(1+.015*hoverMain),tl+(reduce?0:py3*.05*(1-e)+.38*Math.pow(1-introT,2.5)),-.35+(reduce?0:px3*.04*(1-e)+.35*Math.pow(1-introT,2.5)),reduce?.4:.4-t*.045+.5*Math.pow(1-introT,3),a1*(1+.18*hoverMain),1+Math.min(zoom-1,3)*.3,t,1-sm(.1,.55,e));
   }
 
   /* 서비스 은하들 */
