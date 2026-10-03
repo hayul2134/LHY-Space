@@ -172,7 +172,7 @@ var PAL={
 /* 은하 하나를 별 데이터와 빛 번짐 이미지로 만든다 */
 function build(kind,n,pal,pal2,o){
   o=o||{}; pal2=pal2||pal;
-  var X=new Float32Array(n),Y=new Float32Array(n),S=new Float32Array(n),K=new Uint8Array(n),bk={};
+  var X=new Float32Array(n),Y=new Float32Array(n),S=new Float32Array(n),K=new Uint8Array(n),Z=new Float32Array(n),bk={};
   var arms=o.arms||2, tw=o.tw||5.4, clus=[];
   if(o.grand){for(var cc=0;cc<110;cc++){var rc=.25+rnd()*.7,ac=((rnd()*6)|0)*1.0472+rc*tw+gauss()*.05;clus.push(W2(Math.cos(ac)*rc,Math.sin(ac)*rc))}}
   for(var i=0;i<n;i++){
@@ -200,7 +200,7 @@ function build(kind,n,pal,pal2,o){
       c=i&1; a=rnd()*6.2832; r=Math.abs(gauss())*.2*(t<.1?2.2:1);
       x=Math.cos(a)*r;y=Math.sin(a)*r;
     }
-    X[i]=x;Y[i]=y;K[i]=c;
+    X[i]=x;Y[i]=y;K[i]=c;Z[i]=o.grand?gauss()*(.03+.2*Math.exp(-Math.pow(Math.sqrt(x*x+y*y)/.3,2))):0;
     var rl=Math.sqrt(x*x+y*y), q=rnd(), ci;
     if(q<.08||forceAcc)ci=3; else if(rl<.16)ci=q<.7?0:1; else if(rl<.55)ci=q<.6?1:2; else ci=o.grand?(q<.5?2:q<.72?3:1):(q<.75?2:1);
     var lv=rnd(); lv=lv<.5?0:lv<.86?1:2; if(rl<.2)lv=rl<.1?0:Math.min(lv,1); if(forceAcc)lv=2;
@@ -236,7 +236,7 @@ function build(kind,n,pal,pal2,o){
     dust=document.createElement('canvas');dust.width=dust.height=768;var dg=dust.getContext('2d'),du=768/2.4;
     for(var di=0;di<2600;di++){var dr=.16+rnd()*.7,da=(di%6)*1.0472+dr*tw+.52+gauss()*.07,dw2=W2(Math.cos(da)*dr,Math.sin(da)*dr),dx=384+dw2[0]*du,dy=384+dw2[1]*du,drad=(.012+rnd()*.026)*du,dgr=dg.createRadialGradient(dx,dy,0,dx,dy,drad);dgr.addColorStop(0,'rgba(4,10,30,.08)');dgr.addColorStop(1,'rgba(4,10,30,0)');dg.fillStyle=dgr;dg.fillRect(dx-drad,dy-drad,drad*2,drad*2)}
   }
-  return {kind:kind,X:X,Y:Y,S:S,K:K,buckets:buckets,glows:glows,dust:dust};
+  return {kind:kind,X:X,Y:Y,S:S,K:K,Z:Z,depth:o.grand?.18:0,bulge:!!o.grand,buckets:buckets,glows:glows,dust:dust};
 }
 
 /* 은하 그리기. cx,cy,R은 모두 실제 픽셀 단위 */
@@ -244,7 +244,7 @@ function drawGal(G,cx,cy,R,tilt,inc,rot,alpha,sizeMul,t,gk){
   if(gk===undefined)gk=1;
   if(alpha<.004||R<2)return;
   var ci=Math.cos(inc),si=Math.sin(inc),cr=Math.cos(rot),sr=Math.sin(rot),phi=t*.45,bin=G.kind==='binary';
-  var ox=.36*Math.cos(phi),oy=.36*Math.sin(phi),Wd=cv.width,Hd=cv.height,pxs=dpr*sizeMul,k,b,j,jn,i,x,y,rx,ry,sx,sy,s,idx;
+  var ox=.36*Math.cos(phi),oy=.36*Math.sin(phi),Wd=cv.width,Hd=cv.height,pxs=dpr*sizeMul,k,b,j,jn,i,x,y,rx,ry,sx,sy,s,idx,pf,zk=Math.sqrt(Math.max(0,1-tilt*tilt)),dep=G.depth||0;
   ctx.save(); ctx.globalAlpha=Math.min(1,alpha)*gk; ctx.globalCompositeOperation='lighter';
   ctx.translate(cx,cy); ctx.rotate(inc); ctx.scale(1,tilt); ctx.rotate(rot);
   for(k=0;k<G.glows.length;k++){
@@ -254,16 +254,25 @@ function drawGal(G,cx,cy,R,tilt,inc,rot,alpha,sizeMul,t,gk){
     ctx.restore();
   }
   ctx.restore();
+  if(G.bulge){
+    /* 납작한 원반 위로 둥글게 솟은 중심부: 입체감의 핵심 */
+    ctx.save(); ctx.globalAlpha=Math.min(1,alpha)*gk; ctx.globalCompositeOperation='lighter';
+    ctx.translate(cx,cy-R*.03); ctx.rotate(inc); ctx.scale(1,1.12);
+    var bg=ctx.createRadialGradient(0,0,0,0,0,R*.27);
+    bg.addColorStop(0,'rgba(255,242,220,.3)'); bg.addColorStop(.4,'rgba(170,200,255,.14)'); bg.addColorStop(1,'rgba(80,110,255,0)');
+    ctx.fillStyle=bg; ctx.fillRect(-R*.3,-R*.3,R*.6,R*.6); ctx.restore();
+  }
   ctx.save(); ctx.globalAlpha=Math.min(1,alpha); ctx.globalCompositeOperation='lighter';
   for(k=0;k<G.buckets.length;k++){
     b=G.buckets[k]; ctx.fillStyle=b.style; idx=b.idx;
     for(j=0,jn=(idx.length*qual)|0;j<jn;j++){
       i=idx[j]; x=G.X[i]; y=G.Y[i];
       if(bin){ if(G.K[i]){x-=ox;y-=oy}else{x+=ox;y+=oy} }
-      rx=x*cr-y*sr; ry=(x*sr+y*cr)*tilt;
+      rx=x*cr-y*sr; ry=(x*sr+y*cr)*tilt-G.Z[i]*zk;
+      pf=1+dep*ry; rx*=pf; ry*=pf;
       sx=cx+R*(rx*ci-ry*si); sy=cy+R*(rx*si+ry*ci);
       if(sx<-6||sx>Wd+6||sy<-6||sy>Hd+6)continue;
-      s=G.S[i]*pxs; ctx.fillRect(sx-s/2,sy-s/2,s,s);
+      s=G.S[i]*pxs*(dep?pf:1); ctx.fillRect(sx-s/2,sy-s/2,s,s);
     }
   }
   ctx.restore();
@@ -332,7 +341,7 @@ function layout(){
 }
 
 /* 상태: prog 0 = 바깥 큰 은하, 1 = 은하 안 */
-var qual=1,fAcc=0,fN=0,prog=0,target=0,lastE=0,t=0,last=performance.now(),introT=0,hoverMain=0;
+var px3=0,py3=0,tx3=0,ty3=0,qual=1,fAcc=0,fN=0,prog=0,target=0,lastE=0,t=0,last=performance.now(),introT=0,hoverMain=0;
 var welcome=document.getElementById('welcome'),bar=document.getElementById('bar'),toastEl=document.getElementById('toast');
 
 function enter(){ if(target===1)return; target=1; welcome.classList.add('hide'); bar.classList.add('on'); cv.tabIndex=-1; cv.classList.remove('go') }
@@ -344,6 +353,7 @@ function frame(now){
   if(++fN>=30){var avg=fAcc/fN*1000; if(avg>30)qual=Math.max(.3,qual*.8); else if(avg<19&&qual<1)qual=Math.min(1,qual*1.12); fAcc=0; fN=0}
   if(introT<1)introT=Math.min(1,introT+dt/(reduce?.5:2.4));
   if(prog!==target){ var step=dt/(reduce?.6:(target>prog?3:2.4)); prog=target>prog?Math.min(target,prog+step):Math.max(target,prog-step) }
+  px3+=(tx3-px3)*.05; py3+=(ty3-py3)*.05;
   var e=ease(prog), Wd=cv.width, Hd=cv.height, cx=mcx*dpr, cy=mcy*dpr;
   ctx.clearRect(0,0,Wd,Hd);
 
@@ -369,7 +379,7 @@ function frame(now){
   hoverMain+=((cv.classList.contains('go')&&target===0?1:0)-hoverMain)*.1;
   if(a1>0){
     var tl=.52+.1*e; flares(a1*(1-sm(.05,.3,e)),t);
-    drawGal(main,cx,cy,mainR*dpr*zoom*ip*(1+.015*hoverMain),tl,-.35,reduce?.4:.4-t*.06,a1*(1+.18*hoverMain),1+Math.min(zoom-1,3)*.3,t,1-sm(.1,.55,e));
+    drawGal(main,cx,cy,mainR*dpr*zoom*ip*(1+.015*hoverMain),tl+(reduce?0:py3*.16*(1-e)),-.35+(reduce?0:px3*.14*(1-e)),reduce?.4:.4-t*.06,a1*(1+.18*hoverMain),1+Math.min(zoom-1,3)*.3,t,1-sm(.1,.55,e));
   }
 
   /* 서비스 은하들 */
@@ -410,6 +420,7 @@ cv.addEventListener('keydown',function(e){ if(target===0&&(e.key==='Enter'||e.ke
 addEventListener('keydown',function(e){ if(e.key==='Escape')leave() });
 document.getElementById('back').addEventListener('click',leave);
 addEventListener('resize',layout);
+addEventListener('pointermove',function(e){tx3=e.clientX/innerWidth-.5;ty3=e.clientY/innerHeight-.5},{passive:true});
 
 init(); layout();
 requestAnimationFrame(function(n){last=n;frame(n)});
