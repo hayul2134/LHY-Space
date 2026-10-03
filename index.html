@@ -105,6 +105,9 @@ body{background:
 #me{position:fixed;left:0;top:0;pointer-events:none;opacity:0;transition:opacity .5s ease;will-change:transform}
 #me span{display:flex;align-items:center;gap:7px;padding:6px 11px;border-radius:999px;border:1px solid rgba(255,255,255,.22);background:linear-gradient(145deg,rgba(255,255,255,.16),rgba(255,255,255,.05));backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);font:500 11px/1 var(--body);letter-spacing:.1em;color:var(--ice);white-space:nowrap}
 #me i{width:7px;height:7px;border-radius:50%;background:#8FD3FF}
+#me.hot{pointer-events:auto}
+#me button{display:none;margin-left:2px;padding:4px 9px;border-radius:999px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.14);color:var(--ice);font:500 10.5px/1 var(--body);cursor:pointer}
+#me.hot button{display:inline-block}
 #toast{
   position:fixed;left:50%;top:calc(15vh + env(safe-area-inset-top));transform:translate(-50%,-10px);
   padding:12px 20px;border-radius:999px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;
@@ -133,7 +136,7 @@ body{background:
   <p><span>YOUR</span><span>OWN</span><span>SPACE</span><em id="tagc"></em></p>
 </aside>
 <div id="labels"></div>
-<div id="me" aria-hidden="true"><span><i></i><b>내 별</b></span></div>
+<div id="me"><span><i></i><b>내 별</b><button type="button" id="mec">색 바꾸기</button></span></div>
 <div id="sub" aria-hidden="true"><b>ONE GALAXY · YOUR OWN SPACE</b><small>하나의 우주, 나만의 공간</small></div>
 <div id="toast" role="status"></div>
 
@@ -337,38 +340,64 @@ function drawGal(G,cx,cy,R,tilt,inc,rot,alpha,sizeMul,t,gk){
 /* 배경의 먼 별 */
 var BG=[]; for(var q0=0;q0<4200;q0++)BG.push({a:rnd()*6.2832,d:.03+Math.sqrt(rnd())*1.1,z:.3+rnd()*.9,s:.5+Math.pow(rnd(),2.4)*1.1,o:.3+rnd()*.6,p:rnd()*6.28});
 
-/* 내 별: 방문자마다 은하 안에 자기 별이 하나 있다 (눌러서 색 바꾸기) */
-var MEC=['143,211,255','182,245,230','255,214,168','224,184,255','255,183,197'], meX=-999, meY=-999, meOn=false, meHot=false;
-var meEl=null, meDot=null, meTxt=null;
+/* 내 별: 방문자마다 은하 안에 자기 별이 하나 있다. 은하를 누르면 이 별 속으로 들어간다 */
+var MEC=['143,211,255','182,245,230','255,214,168','224,184,255','255,183,197'], meX=-999, meY=-999, meOn=false, meHot=false, meOver=false;
+var meEl=null;
 function nearMe(px,py){return meOn&&Math.hypot(px-meX,py-meY)<30}
-function drawMe(cx,cy,R,tilt,inc,rot,a,t){
-  if(!meEl){meEl=document.getElementById('me');meDot=meEl.querySelector('i');meTxt=meEl.querySelector('b')}
-  var k=sm(.5,.95,introT)*a*(1-sm(.05,.3,prog));
-  if(k<.02){meOn=false;meEl.style.opacity=0;return}
+function meOff(R,tilt,inc,rot){
   var ang=ME.s*6.2832, x=Math.cos(ang)*.5, y=Math.sin(ang)*.5,
       cr=Math.cos(rot),sr=Math.sin(rot),ci=Math.cos(inc),si=Math.sin(inc),
-      rx=x*cr-y*sr, ry=(x*sr+y*cr)*tilt, sx=cx+R*(rx*ci-ry*si), sy=cy+R*(rx*si+ry*ci),
-      col=MEC[ME.c%5], tw=.8+.2*Math.sin(t*2.4), d=dpr;
+      rx=x*cr-y*sr, ry=(x*sr+y*cr)*tilt;
+  return [R*(rx*ci-ry*si), R*(rx*si+ry*ci)];
+}
+/* 오목한 4방 별 모양 (십자가처럼 가늘지 않고 몸통이 있는 반짝임) */
+function sparkle(x,y,r,rot,col,al){
+  ctx.save(); ctx.translate(x,y); ctx.rotate(rot);
+  var g=ctx.createRadialGradient(0,0,0,0,0,r);
+  g.addColorStop(0,'rgba(255,255,255,'+al+')'); g.addColorStop(.3,'rgba('+col+','+(.9*al)+')'); g.addColorStop(1,'rgba('+col+',0)');
+  ctx.fillStyle=g; ctx.beginPath(); ctx.moveTo(r,0);
+  for(var i=0;i<4;i++){var a1=(i+1)*1.5708, am=a1-.7854; ctx.quadraticCurveTo(Math.cos(am)*r*.1,Math.sin(am)*r*.1,Math.cos(a1)*r,Math.sin(a1)*r)}
+  ctx.closePath(); ctx.fill(); ctx.restore();
+}
+function drawMe(cx,cy,R,tilt,inc,rot,a,t,ms){
+  if(!meEl)meEl=document.getElementById('me');
+  var k=sm(.5,.95,introT)*a;
+  if(k<.02){meOn=false;meEl.style.opacity=0;meEl.classList.remove('hot');return}
+  var o=meOff(R,tilt,inc,rot), sx=cx+o[0], sy=cy+o[1], col=MEC[ME.c%5], tw=.82+.18*Math.sin(t*2.4), d=dpr, u=d*ms;
   meX=sx/d; meY=sy/d; meOn=true;
-  ctx.save(); ctx.globalCompositeOperation='lighter'; ctx.globalAlpha=Math.min(1,k);
+  ctx.save(); ctx.globalAlpha=Math.min(1,k);
   ctx.globalCompositeOperation='source-over';
-  var dk=ctx.createRadialGradient(sx,sy,0,sx,sy,34*d); dk.addColorStop(0,'rgba(3,8,26,.6)'); dk.addColorStop(1,'rgba(3,8,26,0)');
-  ctx.fillStyle=dk; ctx.fillRect(sx-34*d,sy-34*d,68*d,68*d);
+  var dk=ctx.createRadialGradient(sx,sy,0,sx,sy,36*u); dk.addColorStop(0,'rgba(3,8,26,.55)'); dk.addColorStop(1,'rgba(3,8,26,0)');
+  ctx.fillStyle=dk; ctx.fillRect(sx-36*u,sy-36*u,72*u,72*u);
   ctx.globalCompositeOperation='lighter';
-  var g=ctx.createRadialGradient(sx,sy,0,sx,sy,32*d);
-  g.addColorStop(0,'rgba('+col+','+tw+')'); g.addColorStop(.2,'rgba('+col+','+(.55*tw)+')'); g.addColorStop(.55,'rgba('+col+','+(.16*tw)+')'); g.addColorStop(1,'rgba('+col+',0)');
-  ctx.fillStyle=g; ctx.fillRect(sx-32*d,sy-32*d,64*d,64*d);
-  ctx.fillStyle='rgba(255,255,255,'+tw+')'; ctx.fillRect(sx-2.8*d,sy-2.8*d,5.6*d,5.6*d);
-  ctx.strokeStyle='rgba('+col+','+(.85*tw)+')'; ctx.lineWidth=d*1.3; ctx.beginPath();
-  ctx.moveTo(sx-20*d,sy);ctx.lineTo(sx+20*d,sy);ctx.moveTo(sx,sy-20*d);ctx.lineTo(sx,sy+20*d);ctx.stroke();
-  ctx.strokeStyle='rgba('+col+',.6)'; ctx.lineWidth=d*1.2; ctx.beginPath(); ctx.arc(sx,sy,12*d,0,6.2832); ctx.stroke();
-  if(t<(ME_NEW?24:10)){var pp=(t*.45)%1; ctx.strokeStyle='rgba('+col+','+(.65*(1-pp))+')'; ctx.lineWidth=d*1.6; ctx.beginPath(); ctx.arc(sx,sy,(12+34*pp)*d,0,6.2832); ctx.stroke()}
+  var g=ctx.createRadialGradient(sx,sy,0,sx,sy,30*u);
+  g.addColorStop(0,'rgba('+col+','+tw+')'); g.addColorStop(.25,'rgba('+col+','+(.45*tw)+')'); g.addColorStop(1,'rgba('+col+',0)');
+  ctx.fillStyle=g; ctx.fillRect(sx-30*u,sy-30*u,60*u,60*u);
+  sparkle(sx,sy,30*u*(.92+.12*tw),0,col,tw);
+  sparkle(sx,sy,17*u,.7854,col,.75*tw);
+  ctx.fillStyle='rgba(255,255,255,'+tw+')'; ctx.beginPath(); ctx.arc(sx,sy,3*u,0,6.2832); ctx.fill();
+  /* 위치를 알리듯 천천히 퍼지는 동그라미 */
+  for(var j=0;j<2;j++){
+    var pp=(t*.3+j*.5)%1; ctx.strokeStyle='rgba('+col+','+(.7*Math.pow(1-pp,1.3))+')'; ctx.lineWidth=d*(2-1.2*pp);
+    ctx.beginPath(); ctx.arc(sx,sy,(10+46*pp)*u,0,6.2832); ctx.stroke();
+  }
   ctx.restore();
   meHot=Math.hypot((tx3+.5)*innerWidth-meX,(ty3+.5)*innerHeight-meY)<30;
+  var idle=prog<.02, hot=(meHot||meOver)&&idle;
   meEl.style.transform='translate('+(meX+16)+'px,'+(meY-30)+'px)';
-  meEl.style.opacity=(t<(ME_NEW?20:8)||meHot)?Math.min(1,k):0;
-  meDot.style.background='rgb('+col+')';
-  var tx=meHot?'눌러서 색 바꾸기':'내 별'; if(meTxt.textContent!==tx)meTxt.textContent=tx;
+  meEl.style.opacity=(idle&&(t<(ME_NEW?20:8)||meHot||meOver))?Math.min(1,k):0;
+  meEl.classList.toggle('hot',hot);
+  meEl.querySelector('i').style.background='rgb('+col+')';
+}
+
+/* 별 속으로 들어갈 때 터지는 빛 */
+function bloom(cx,cy,R,e,col){
+  var b=sm(.3,.72,e)*(1-sm(.8,1,e)); if(b<.01)return;
+  var rr=R*(.12+1.7*e*e);
+  ctx.save(); ctx.globalCompositeOperation='lighter';
+  var g=ctx.createRadialGradient(cx,cy,0,cx,cy,rr);
+  g.addColorStop(0,'rgba(255,255,255,'+(.95*b)+')'); g.addColorStop(.25,'rgba('+col+','+(.7*b)+')'); g.addColorStop(1,'rgba('+col+',0)');
+  ctx.fillStyle=g; ctx.fillRect(cx-rr,cy-rr,rr*2,rr*2); ctx.restore();
 }
 
 /* 첫 등장: 중심에서 터지는 빛과 퍼지는 충격파 */
@@ -486,11 +515,13 @@ function frame(now){
   var zoom=reduce?1+e*.12:Math.exp(Math.log(15)*e), a1=(1-sm(.42,.9,e))*sm(0,.4,introT), ip=.1+.9*(1-Math.pow(1-introT,3.2));
   hoverMain+=((cv.classList.contains('go')&&target===0?1:0)-hoverMain)*.1;
   burst(cx,cy,mainR*dpr,introT,.52);
-  if(a1>0){
+  if(a1>0||(e>.3&&e<1)){
     var tl=.52+.1*e; flares(a1*(1-sm(.05,.3,e)),t);
-    var mR=mainR*dpr*zoom*ip*(1+.015*hoverMain), mT=tl+(reduce?0:py3*.05*(1-e)+.38*Math.pow(1-introT,2.5)), mI=-.35+(reduce?0:px3*.04*(1-e)+.35*Math.pow(1-introT,2.5)), mRot=reduce?.4:.4-t*.045+.5*Math.pow(1-introT,3);
-    drawGal(main,cx,cy,mR,mT,mI,mRot,a1*(1+.18*hoverMain),1+Math.min(zoom-1,3)*.3,t,1-sm(.1,.55,e));
-    drawMe(cx,cy,mR,mT,mI,mRot,a1,t);
+    var R0=mainR*dpr*ip*(1+.015*hoverMain), mR=R0*zoom, mT=tl+(reduce?0:py3*.05*(1-e)+.38*Math.pow(1-introT,2.5)), mI=-.35+(reduce?0:px3*.04*(1-e)+.35*Math.pow(1-introT,2.5)), mRot=reduce?.4:.4-t*.045+.5*Math.pow(1-introT,3);
+    var mv=meOff(R0,mT,mI,mRot), gx=cx-e*zoom*mv[0], gy=cy-e*zoom*mv[1];
+    drawGal(main,gx,gy,mR,mT,mI,mRot,a1*(1+.18*hoverMain),1+Math.min(zoom-1,3)*.3,t,1-sm(.1,.55,e));
+    drawMe(gx,gy,mR,mT,mI,mRot,sm(0,.4,introT)*(1-sm(.78,.95,e)),t,1+e*e*9);
+    bloom(gx+zoom*mv[0],gy+zoom*mv[1],R0,e,MEC[ME.c%5]);
   }
 
   /* 서비스 은하들 */
@@ -524,7 +555,7 @@ cv.addEventListener('pointermove',function(e){
 });
 cv.addEventListener('pointerleave',function(){if(prog===1)hot=-1;cv.classList.remove('go')});
 cv.addEventListener('click',function(e){
-  if(target===0){ if(prog===0&&introT>.7&&nearMe(e.clientX,e.clientY)){ME.c=(ME.c+1)%5;saveMe()} else if(prog===0&&introT>.7&&hitMain(e.clientX,e.clientY))enter() }
+  if(target===0){ if(prog===0&&introT>.7&&(nearMe(e.clientX,e.clientY)||hitMain(e.clientX,e.clientY)))enter() }
   else if(prog===1){var h=hitMini(e.clientX,e.clientY); if(h>-1)explore(h)}
 });
 cv.addEventListener('keydown',function(e){ if(target===0&&(e.key==='Enter'||e.key===' ')){e.preventDefault();enter()} });
@@ -534,6 +565,8 @@ addEventListener('resize',layout);
 addEventListener('pointermove',function(e){tx3=e.clientX/innerWidth-.5;ty3=e.clientY/innerHeight-.5},{passive:true});
 
 init(); layout(); paintTag(false);
+document.getElementById('mec').addEventListener('click',function(e){e.stopPropagation();ME.c=(ME.c+1)%5;saveMe()});
+(function(){var m=document.getElementById('me');m.addEventListener('mouseenter',function(){meOver=true});m.addEventListener('mouseleave',function(){meOver=false})})();
 if(!ME_NEW)welcome.textContent='다시 오신 걸 환영합니다.';
 requestAnimationFrame(function(n){last=n;frame(n)});
 setTimeout(function(){welcome.classList.add('show')},50);
