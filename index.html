@@ -353,7 +353,7 @@ function frame(now){
   if(++fN>=30){var avg=fAcc/fN*1000; if(avg>30)qual=Math.max(.3,qual*.8); else if(avg<19&&qual<1)qual=Math.min(1,qual*1.12); fAcc=0; fN=0}
   if(introT<1)introT=Math.min(1,introT+dt/(reduce?.5:2.4));
   if(prog!==target){ var step=dt/(reduce?.6:(target>prog?3:2.4)); prog=target>prog?Math.min(target,prog+step):Math.max(target,prog-step) }
-  px3+=(tx3-px3)*.05; py3+=(ty3-py3)*.05;
+  px3+=(tx3-px3)*.025; py3+=(ty3-py3)*.025;
   var e=ease(prog), Wd=cv.width, Hd=cv.height, cx=mcx*dpr, cy=mcy*dpr;
   ctx.clearRect(0,0,Wd,Hd);
 
@@ -379,7 +379,7 @@ function frame(now){
   hoverMain+=((cv.classList.contains('go')&&target===0?1:0)-hoverMain)*.1;
   if(a1>0){
     var tl=.52+.1*e; flares(a1*(1-sm(.05,.3,e)),t);
-    drawGal(main,cx,cy,mainR*dpr*zoom*ip*(1+.015*hoverMain),tl+(reduce?0:py3*.16*(1-e)),-.35+(reduce?0:px3*.14*(1-e)),reduce?.4:.4-t*.06,a1*(1+.18*hoverMain),1+Math.min(zoom-1,3)*.3,t,1-sm(.1,.55,e));
+    drawGal(main,cx,cy,mainR*dpr*zoom*ip*(1+.015*hoverMain),tl+(reduce?0:py3*.05*(1-e)),-.35+(reduce?0:px3*.04*(1-e)),reduce?.4:.4-t*.045,a1*(1+.18*hoverMain),1+Math.min(zoom-1,3)*.3,t,1-sm(.1,.55,e));
   }
 
   /* 서비스 은하들 */
