@@ -50,8 +50,7 @@ body{background:
 .brand{display:flex;align-items:center;gap:11px;text-decoration:none;color:inherit;pointer-events:auto}
 .mk{position:relative;display:block;width:44px;height:44px;font-style:normal}
 .mk img{position:absolute;left:3px;top:3px;width:38px;height:38px;filter:drop-shadow(0 0 14px rgba(80,140,255,.7))}
-.mk .orbit{position:absolute;left:-7px;top:-7px;width:58px;height:58px;overflow:visible}
-.brand b{font:italic 700 24px/1 var(--display);letter-spacing:.01em;background:linear-gradient(180deg,#fff 20%,#9cc6ff 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 12px rgba(100,160,255,.65))}
+.brand b{font:italic 700 24px/1 var(--display);letter-spacing:.01em;background:linear-gradient(180deg,#fff 20%,#9cc6ff 100%);-webkit-background-clip:text;background-clip:text;color:transparent;padding:0 .16em 0 .04em;margin-right:-.12em;filter:drop-shadow(0 0 12px rgba(100,160,255,.65))}
 .brand span{font:300 24px/1 var(--display);opacity:.85;margin-left:-5px}
 
 #tag{
@@ -109,7 +108,6 @@ body{background:
 <header id="bar">
   <a class="brand" href="/" aria-label="LHY Space 홈">
     <em class="mk"><img src="/logo-mark.svg" alt="">
-      <svg class="orbit" viewBox="-30 -30 60 60" aria-hidden="true"><g transform="rotate(-24)"><ellipse rx="27" ry="9.5" fill="none" stroke="rgba(160,205,255,.45)" stroke-width=".7"/><circle r="1.9" fill="#fff"><animateMotion dur="7s" repeatCount="indefinite" path="M-27 0A27 9.5 0 1 1 27 0A27 9.5 0 1 1 -27 0"/></circle></g></svg>
     </em><b>LHY</b><span>Space</span>
   </a>
   <button class="glass" id="back" type="button">은하 밖으로</button>
