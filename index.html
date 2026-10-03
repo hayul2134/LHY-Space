@@ -30,17 +30,18 @@ body{background:
 
 #welcome{
   position:fixed;left:0;right:0;top:calc(7vh + env(safe-area-inset-top));text-align:center;pointer-events:none;
-  font-weight:700;font-size:clamp(24px,3.4vw,40px);letter-spacing:.1em;text-indent:.1em;
+  font-weight:700;font-size:clamp(24px,3.4vw,40px);letter-spacing:.5em;text-indent:.5em;
   text-shadow:0 0 28px rgba(111,179,255,.75),0 0 4px rgba(255,255,255,.4);
-  opacity:0;transform:translateY(-6px);transition:opacity 2s ease 1s, transform 2s ease 1s;
+  opacity:0;transform:translateY(-6px);
+  transition:opacity 2.2s ease 3s, transform 2.2s ease 3s, letter-spacing 3.2s cubic-bezier(.2,.7,.2,1) 3s, text-indent 3.2s cubic-bezier(.2,.7,.2,1) 3s;
 }
-#welcome.show{opacity:1;transform:none}
+#welcome.show{opacity:1;transform:none;letter-spacing:.1em;text-indent:.1em}
 #welcome.hide{opacity:0;transform:translateY(-10px);transition:opacity .6s ease, transform .6s ease}
 
 #bar{
   position:fixed;left:0;right:0;top:0;display:flex;justify-content:space-between;align-items:center;
   padding:calc(22px + env(safe-area-inset-top)) clamp(18px,3.4vw,52px) 0;pointer-events:none;
-  opacity:0;animation:fadein 1.8s ease .3s forwards;
+  opacity:0;animation:fadein 1.8s ease 2.6s forwards;
 }
 @keyframes fadein{to{opacity:1}}
 @keyframes draw{from{transform:scaleY(0)}to{transform:scaleY(1)}}
@@ -53,9 +54,9 @@ body{background:
 
 #tag{
   position:fixed;left:clamp(18px,3.4vw,52px);top:clamp(120px,17vh,190px);display:flex;gap:16px;pointer-events:none;
-  opacity:0;animation:fadein 2s ease 1.4s forwards;
+  opacity:0;animation:fadein 2s ease 3.8s forwards;
 }
-#tag i{width:1px;height:62px;background:linear-gradient(180deg,rgba(160,205,255,.95),rgba(160,205,255,0));transform-origin:top;animation:draw 1.6s ease 1.4s both}
+#tag i{width:1px;height:62px;background:linear-gradient(180deg,rgba(160,205,255,.95),rgba(160,205,255,0));transform-origin:top;animation:draw 1.6s ease 3.8s both}
 #tag p{font:500 11px/1.9 var(--display);letter-spacing:.38em;color:rgba(222,238,255,.88);text-shadow:0 0 12px rgba(111,179,255,.65)}
 .glass{
   font:500 14px/1 var(--body);color:var(--ice);padding:10px 16px;border-radius:999px;cursor:pointer;
@@ -282,6 +283,25 @@ function drawGal(G,cx,cy,R,tilt,inc,rot,alpha,sizeMul,t,gk){
 /* 배경의 먼 별 */
 var BG=[]; for(var q0=0;q0<4200;q0++)BG.push({a:rnd()*6.2832,d:.03+Math.sqrt(rnd())*1.1,z:.3+rnd()*.9,s:.5+Math.pow(rnd(),2.4)*1.1,o:.3+rnd()*.6,p:rnd()*6.28});
 
+/* 첫 등장: 중심에서 터지는 빛과 퍼지는 충격파 */
+function burst(cx,cy,R,u,tilt){
+  if(reduce||u>=.6)return;
+  var fl=sm(0,.07,u)*(1-sm(.07,.45,u)), rr=R*(.25+1.1*u);
+  ctx.save(); ctx.globalCompositeOperation='lighter';
+  if(fl>.01){
+    var g=ctx.createRadialGradient(cx,cy,0,cx,cy,rr);
+    g.addColorStop(0,'rgba(255,248,235,'+.95*fl+')'); g.addColorStop(.3,'rgba(150,190,255,'+.4*fl+')'); g.addColorStop(1,'rgba(60,100,255,0)');
+    ctx.fillStyle=g; ctx.fillRect(cx-rr,cy-rr,rr*2,rr*2);
+  }
+  for(var k=0;k<2;k++){
+    var p=clamp((u-.04-k*.07)/.5,0,1); if(p<=0||p>=1)continue;
+    var pe=1-Math.pow(1-p,3), a=(1-p)*(k?.3:.55);
+    ctx.strokeStyle='rgba(160,200,255,'+a+')'; ctx.lineWidth=(k?2:3.5)*dpr*(1-p*.6);
+    ctx.beginPath(); ctx.ellipse(cx,cy,R*1.5*pe,R*1.5*pe*tilt,-.35,0,6.2832); ctx.stroke();
+  }
+  ctx.restore();
+}
+
 /* 화면 가장자리의 가까운 별 */
 var FL=[[.07,.22,1],[.93,.26,.8],[.14,.8,.9],[.88,.84,1.1],[.3,.9,.6],[.75,.1,.7],[.05,.55,.6],[.96,.58,.6]];
 function flares(a,t){
@@ -351,20 +371,20 @@ var tt; function toast(m){toastEl.textContent=m;toastEl.classList.add('on');clea
 function frame(now){
   var raw=(now-last)/1000, dt=Math.min(.05,raw); last=now; t+=dt; fAcc+=raw;
   if(++fN>=30){var avg=fAcc/fN*1000; if(avg>30)qual=Math.max(.3,qual*.8); else if(avg<19&&qual<1)qual=Math.min(1,qual*1.12); fAcc=0; fN=0}
-  if(introT<1)introT=Math.min(1,introT+dt/(reduce?.5:2.4));
+  if(introT<1)introT=Math.min(1,introT+dt/(reduce?.5:4.4));
   if(prog!==target){ var step=dt/(reduce?.6:(target>prog?3:2.4)); prog=target>prog?Math.min(target,prog+step):Math.max(target,prog-step) }
   px3+=(tx3-px3)*.025; py3+=(ty3-py3)*.025;
   var e=ease(prog), Wd=cv.width, Hd=cv.height, cx=mcx*dpr, cy=mcy*dpr;
   ctx.clearRect(0,0,Wd,Hd);
 
   /* 먼 별: 평소엔 반짝, 이동 중엔 바깥으로 흐름 */
-  var diag=Math.sqrt(Wd*Wd+Hd*Hd)*.55, speed=Math.abs(e-lastE)/Math.max(dt,.001), span=diag*1.1, asp=Hd/Wd*1.2;
+  var ew=e-(reduce?0:Math.pow(1-introT,2)*1.2), diag=Math.sqrt(Wd*Wd+Hd*Hd)*.55, speed=Math.abs(ew-lastE)/Math.max(dt,.001), span=diag*1.1, asp=Hd/Wd*1.2;
   ctx.save(); ctx.globalCompositeOperation='lighter';
   for(var q=0;q<BG.length;q++){
-    var s=BG[q], d0=s.d*diag, d=(d0+e*diag*2.4*s.z)%span, ca=Math.cos(s.a), sa=Math.sin(s.a);
+    var s=BG[q], d0=s.d*diag, d=(((d0+ew*diag*2.4*s.z)%span)+span)%span, ca=Math.cos(s.a), sa=Math.sin(s.a);
     var al=s.o*(.65+.35*Math.sin(t*1.3+s.p)), x=cx+ca*d, y=cy+sa*d*asp;
     if(speed>.04&&(q&1)===0){
-      var dp=(d0+lastE*diag*2.4*s.z)%span;
+      var dp=(((d0+lastE*diag*2.4*s.z)%span)+span)%span;
       if(Math.abs(dp-d)<diag*.4){
         ctx.strokeStyle='rgba(200,225,255,'+Math.min(.7,al*(.4+speed*1.6))+')'; ctx.lineWidth=s.s*dpr*.8;
         ctx.beginPath(); ctx.moveTo(cx+ca*dp,cy+sa*dp*asp); ctx.lineTo(x,y); ctx.stroke(); continue;
@@ -372,14 +392,15 @@ function frame(now){
     }
     ctx.fillStyle='rgba(215,232,255,'+al+')'; var z=s.s*dpr; ctx.fillRect(x-z/2,y-z/2,z,z);
   }
-  ctx.restore(); lastE=e;
+  ctx.restore(); lastE=ew;
 
   /* 큰 은하 */
-  var zoom=reduce?1+e*.12:Math.exp(Math.log(15)*e), a1=(1-sm(.42,.9,e))*ease(introT), ip=.93+.07*ease(introT);
+  var zoom=reduce?1+e*.12:Math.exp(Math.log(15)*e), a1=(1-sm(.42,.9,e))*sm(0,.4,introT), ip=.1+.9*(1-Math.pow(1-introT,3.2));
   hoverMain+=((cv.classList.contains('go')&&target===0?1:0)-hoverMain)*.1;
+  burst(cx,cy,mainR*dpr,introT,.52);
   if(a1>0){
     var tl=.52+.1*e; flares(a1*(1-sm(.05,.3,e)),t);
-    drawGal(main,cx,cy,mainR*dpr*zoom*ip*(1+.015*hoverMain),tl+(reduce?0:py3*.05*(1-e)),-.35+(reduce?0:px3*.04*(1-e)),reduce?.4:.4-t*.045,a1*(1+.18*hoverMain),1+Math.min(zoom-1,3)*.3,t,1-sm(.1,.55,e));
+    drawGal(main,cx,cy,mainR*dpr*zoom*ip*(1+.015*hoverMain),tl+(reduce?0:py3*.05*(1-e)),-.35+(reduce?0:px3*.04*(1-e)),reduce?.4:.4-t*.045+9*Math.pow(1-introT,3),a1*(1+.18*hoverMain),1+Math.min(zoom-1,3)*.3,t,1-sm(.1,.55,e));
   }
 
   /* 서비스 은하들 */
@@ -408,12 +429,12 @@ function hitMini(px,py){
   return best;
 }
 cv.addEventListener('pointermove',function(e){
-  if(target===0&&prog===0){cv.classList.toggle('go',hitMain(e.clientX,e.clientY))}
+  if(target===0&&prog===0){cv.classList.toggle('go',introT>.7&&hitMain(e.clientX,e.clientY))}
   else if(prog===1){var h=hitMini(e.clientX,e.clientY);hot=h;cv.classList.toggle('go',h>-1)}
 });
 cv.addEventListener('pointerleave',function(){if(prog===1)hot=-1;cv.classList.remove('go')});
 cv.addEventListener('click',function(e){
-  if(target===0){ if(prog===0&&hitMain(e.clientX,e.clientY))enter() }
+  if(target===0){ if(prog===0&&introT>.7&&hitMain(e.clientX,e.clientY))enter() }
   else if(prog===1){var h=hitMini(e.clientX,e.clientY); if(h>-1)toast(SERV[h].name+' 공간은 아직 준비 중이에요.')}
 });
 cv.addEventListener('keydown',function(e){ if(target===0&&(e.key==='Enter'||e.key===' ')){e.preventDefault();enter()} });
