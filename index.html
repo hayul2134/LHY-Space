@@ -33,7 +33,7 @@ body{background:
   font-weight:700;font-size:clamp(24px,3.4vw,40px);letter-spacing:.5em;text-indent:.5em;
   text-shadow:0 0 28px rgba(111,179,255,.75),0 0 4px rgba(255,255,255,.4);
   opacity:0;transform:translateY(-6px);
-  transition:opacity 2.2s ease 3s, transform 2.2s ease 3s, letter-spacing 3.2s cubic-bezier(.2,.7,.2,1) 3s, text-indent 3.2s cubic-bezier(.2,.7,.2,1) 3s;
+  transition:opacity 1.6s ease 1.9s, transform 1.6s ease 1.9s, letter-spacing 2.2s cubic-bezier(.2,.7,.2,1) 1.9s, text-indent 2.2s cubic-bezier(.2,.7,.2,1) 1.9s;
 }
 #welcome.show{opacity:1;transform:none;letter-spacing:.1em;text-indent:.1em}
 #welcome.hide{opacity:0;transform:translateY(-10px);transition:opacity .6s ease, transform .6s ease}
@@ -41,7 +41,7 @@ body{background:
 #bar{
   position:fixed;left:0;right:0;top:0;display:flex;justify-content:space-between;align-items:center;
   padding:calc(22px + env(safe-area-inset-top)) clamp(18px,3.4vw,52px) 0;pointer-events:none;
-  opacity:0;animation:fadein 1.8s ease 2.6s forwards;
+  opacity:0;animation:fadein 1.4s ease 1.6s forwards;
 }
 @keyframes fadein{to{opacity:1}}
 @keyframes draw{from{transform:scaleY(0)}to{transform:scaleY(1)}}
@@ -54,9 +54,9 @@ body{background:
 
 #tag{
   position:fixed;left:clamp(18px,3.4vw,52px);top:clamp(120px,17vh,190px);display:flex;gap:16px;pointer-events:none;
-  opacity:0;animation:fadein 2s ease 3.8s forwards;
+  opacity:0;animation:fadein 1.6s ease 2.4s forwards;
 }
-#tag i{width:1px;height:62px;background:linear-gradient(180deg,rgba(160,205,255,.95),rgba(160,205,255,0));transform-origin:top;animation:draw 1.6s ease 3.8s both}
+#tag i{width:1px;height:62px;background:linear-gradient(180deg,rgba(160,205,255,.95),rgba(160,205,255,0));transform-origin:top;animation:draw 1.2s ease 2.4s both}
 #tag p{font:500 11px/1.9 var(--display);letter-spacing:.38em;color:rgba(222,238,255,.88);text-shadow:0 0 12px rgba(111,179,255,.65)}
 .glass{
   font:500 14px/1 var(--body);color:var(--ice);padding:10px 16px;border-radius:999px;cursor:pointer;
@@ -371,7 +371,7 @@ var tt; function toast(m){toastEl.textContent=m;toastEl.classList.add('on');clea
 function frame(now){
   var raw=(now-last)/1000, dt=Math.min(.05,raw); last=now; t+=dt; fAcc+=raw;
   if(++fN>=30){var avg=fAcc/fN*1000; if(avg>30)qual=Math.max(.3,qual*.8); else if(avg<19&&qual<1)qual=Math.min(1,qual*1.12); fAcc=0; fN=0}
-  if(introT<1)introT=Math.min(1,introT+dt/(reduce?.5:4.4));
+  if(introT<1)introT=Math.min(1,introT+dt/(reduce?.5:2.8));
   if(prog!==target){ var step=dt/(reduce?.6:(target>prog?3:2.4)); prog=target>prog?Math.min(target,prog+step):Math.max(target,prog-step) }
   px3+=(tx3-px3)*.025; py3+=(ty3-py3)*.025;
   var e=ease(prog), Wd=cv.width, Hd=cv.height, cx=mcx*dpr, cy=mcy*dpr;
