@@ -5,211 +5,331 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>LHY Space — 모든 걸 할 수 있는 공간</title>
 <meta name="description" content="일하고, 쉬고, 놀고, 대화하는 모든 것을 한곳에서. LHY Space.">
-<meta name="theme-color" content="#07142F">
+<meta name="theme-color" content="#050E24">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600&display=swap">
 <style>
 :root{
-  --deep:#07142F; --navy:#0B1F4D; --cobalt:#2F6BFF; --sky:#6FB3FF; --ice:#EAF4FF;
-  --glass:rgba(255,255,255,.085); --glass-line:rgba(255,255,255,.22);
-  --text:#EAF4FF; --muted:rgba(234,244,255,.68);
-  --display:'Sora','Pretendard Variable',Pretendard,system-ui,sans-serif;
+  --ice:#EAF4FF; --sky:#6FB3FF; --muted:rgba(234,244,255,.66); --line:rgba(255,255,255,.22);
   --body:'Pretendard Variable',Pretendard,-apple-system,'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;
+  --display:'Sora','Pretendard Variable',Pretendard,system-ui,sans-serif;
 }
 *{box-sizing:border-box;margin:0}
-html{background:var(--deep);color-scheme:dark}
-body{
-  min-height:100vh; font-family:var(--body); color:var(--text); line-height:1.6;
-  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-  background:
-    radial-gradient(900px 600px at 82% 8%, rgba(47,107,255,.55), transparent 60%),
-    radial-gradient(700px 520px at 8% 42%, rgba(111,179,255,.28), transparent 62%),
-    radial-gradient(800px 600px at 70% 96%, rgba(30,70,200,.5), transparent 60%),
-    linear-gradient(180deg,#07142F 0%,#0A1B45 55%,#07142F 100%);
-  background-attachment:fixed;
-  overflow-x:hidden;
-}
-body::before{
-  content:""; position:fixed; inset:0; pointer-events:none; opacity:.55;
-  background-image:
-    radial-gradient(1.2px 1.2px at 12% 18%, #fff, transparent),
-    radial-gradient(1px 1px at 28% 72%, #cfe6ff, transparent),
-    radial-gradient(1.4px 1.4px at 46% 30%, #fff, transparent),
-    radial-gradient(1px 1px at 63% 84%, #cfe6ff, transparent),
-    radial-gradient(1.2px 1.2px at 78% 52%, #fff, transparent),
-    radial-gradient(1px 1px at 91% 22%, #cfe6ff, transparent),
-    radial-gradient(1px 1px at 36% 8%, #fff, transparent),
-    radial-gradient(1.2px 1.2px at 6% 90%, #fff, transparent);
-}
-.wrap{position:relative; max-width:1120px; margin:0 auto; padding:0 24px}
+html,body{height:100%;overflow:hidden;background:#050E24;color:var(--ice);font-family:var(--body);color-scheme:dark}
+body{background:
+  radial-gradient(70% 60% at 50% 55%, rgba(30,70,190,.34), transparent 70%),
+  radial-gradient(50% 40% at 85% 10%, rgba(47,107,255,.2), transparent 70%),
+  linear-gradient(180deg,#050E24,#07142F 60%,#050E24)}
+#sky{position:fixed;inset:0;width:100%;height:100%;display:block;outline:none;touch-action:manipulation}
+#sky.go{cursor:pointer}
 
-header{display:flex; align-items:center; justify-content:space-between; padding:22px 0}
-.brand{display:flex; align-items:center; gap:10px; text-decoration:none; color:inherit}
-.brand img{width:34px; height:34px}
-.brand b{font:700 18px/1 var(--display); letter-spacing:.01em}
-.brand span{font:400 18px/1 var(--display); opacity:.75; margin-left:-4px}
-.status{
-  font-size:13px; padding:7px 14px; border-radius:999px; color:var(--ice);
-  background:var(--glass); border:1px solid var(--glass-line);
-  backdrop-filter:blur(18px) saturate(160%); -webkit-backdrop-filter:blur(18px) saturate(160%);
+#welcome{
+  position:fixed;left:0;right:0;top:calc(7vh + env(safe-area-inset-top));text-align:center;pointer-events:none;
+  font-weight:300;font-size:clamp(22px,3.2vw,36px);letter-spacing:.12em;text-indent:.12em;
+  text-shadow:0 0 28px rgba(111,179,255,.75),0 0 4px rgba(255,255,255,.4);
+  opacity:0;transform:translateY(-6px);transition:opacity 2s ease 1s, transform 2s ease 1s;
 }
+#welcome.show{opacity:1;transform:none}
+#welcome.hide{opacity:0;transform:translateY(-10px);transition:opacity .6s ease, transform .6s ease}
 
-.hero{display:grid; grid-template-columns:1.1fr .9fr; align-items:center; gap:24px; padding:48px 0 72px}
-.hero h1{font:700 clamp(40px,6.4vw,84px)/1.08 var(--display); letter-spacing:-.02em; word-break:keep-all}
-.hero h1 .ko{display:block; font-family:var(--body); font-weight:800; letter-spacing:-.035em}
-.hero p{margin-top:22px; max-width:30em; font-size:clamp(16px,1.6vw,19px); color:var(--muted); word-break:keep-all}
-.orb{width:min(100%,460px); justify-self:center; aspect-ratio:1; animation:float 7s ease-in-out infinite}
-.orb svg{width:100%; height:100%; overflow:visible; filter:drop-shadow(0 30px 60px rgba(20,60,200,.55)); transition:transform .25s ease-out}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
-
-.zones{display:grid; grid-template-columns:repeat(12,1fr); gap:18px; padding-bottom:80px}
-.zone{
-  position:relative; min-height:200px; padding:26px 28px; display:flex; flex-direction:column; justify-content:space-between; gap:18px;
-  border-radius:30px; border:1px solid var(--glass-line); overflow:hidden;
-  background:linear-gradient(145deg,rgba(255,255,255,.13),rgba(255,255,255,.05));
-  backdrop-filter:blur(26px) saturate(170%); -webkit-backdrop-filter:blur(26px) saturate(170%);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.55), inset 0 -1px 0 rgba(255,255,255,.08), 0 24px 50px rgba(2,10,40,.38);
+#bar{
+  position:fixed;left:0;right:0;top:0;display:flex;justify-content:space-between;align-items:center;
+  padding:calc(18px + env(safe-area-inset-top)) 22px 0;pointer-events:none;
+  opacity:0;transition:opacity .8s ease;
 }
-.zone::before{
-  content:""; position:absolute; inset:0; pointer-events:none;
-  background:radial-gradient(120% 80% at 0% 0%, rgba(255,255,255,.22), transparent 45%);
+#bar.on{opacity:1}
+#bar.on > *{pointer-events:auto}
+.brand{display:flex;align-items:center;gap:9px;text-decoration:none;color:inherit}
+.brand img{width:34px;height:34px}
+.brand b{font:600 17px/1 var(--display)}
+.brand span{font:400 17px/1 var(--display);opacity:.7;margin-left:-3px}
+.glass{
+  font:500 14px/1 var(--body);color:var(--ice);padding:10px 16px;border-radius:999px;cursor:pointer;
+  background:linear-gradient(145deg,rgba(255,255,255,.16),rgba(255,255,255,.06));border:1px solid var(--line);
+  backdrop-filter:blur(20px) saturate(170%);-webkit-backdrop-filter:blur(20px) saturate(170%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 10px 30px rgba(2,8,30,.4);
 }
-.zone svg{width:38px; height:38px; stroke:var(--ice); fill:none; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; position:relative}
-.zone h2{font:700 26px/1.2 var(--body); letter-spacing:-.02em; position:relative}
-.zone p{margin-top:6px; color:var(--muted); font-size:15px; max-width:26em; word-break:keep-all; position:relative}
-.zone .tag{
-  position:relative; align-self:flex-start; font-size:12.5px; padding:4px 11px; border-radius:999px;
-  background:rgba(111,179,255,.18); border:1px solid rgba(111,179,255,.4); color:#CFE6FF;
+.glass:hover{background:linear-gradient(145deg,rgba(255,255,255,.24),rgba(255,255,255,.1))}
+
+#labels{position:fixed;inset:0;pointer-events:none}
+.label{
+  position:absolute;transform:translate(-50%,10px);text-align:center;pointer-events:none;
+  padding:10px 18px 11px;border-radius:22px;border:1px solid var(--line);color:var(--ice);font-family:var(--body);cursor:pointer;
+  background:linear-gradient(145deg,rgba(255,255,255,.15),rgba(255,255,255,.05));
+  backdrop-filter:blur(22px) saturate(170%);-webkit-backdrop-filter:blur(22px) saturate(170%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 14px 34px rgba(2,8,30,.45);
+  opacity:0;transition:opacity .9s ease,transform .9s ease,background .25s;
 }
-.z-work{grid-column:span 7; min-height:240px}
-.z-rest{grid-column:span 5}
-.z-game{grid-column:span 5}
-.z-talk{grid-column:span 7; min-height:240px}
+.label b{display:block;font-size:17px;font-weight:700;letter-spacing:-.01em}
+.label small{display:block;margin-top:2px;font-size:12.5px;color:var(--muted)}
+#labels.on .label{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+#labels.on .label:nth-child(2){transition-delay:.12s}
+#labels.on .label:nth-child(3){transition-delay:.24s}
+#labels.on .label:nth-child(4){transition-delay:.36s}
+.label:hover{background:linear-gradient(145deg,rgba(255,255,255,.26),rgba(255,255,255,.1))}
 
-footer{padding:0 0 40px; text-align:center; color:var(--muted); font-size:13px}
-
-:focus-visible{outline:2px solid var(--sky); outline-offset:3px; border-radius:8px}
-
-@media (max-width:820px){
-  .hero{grid-template-columns:1fr; padding:20px 0 48px; text-align:left}
-  .orb{order:-1; width:min(70%,300px); justify-self:start}
-  .zones{gap:14px}
-  .z-work,.z-rest,.z-game,.z-talk{grid-column:1 / -1; min-height:170px}
+#toast{
+  position:fixed;left:50%;bottom:calc(34px + env(safe-area-inset-bottom));transform:translate(-50%,12px);
+  padding:12px 20px;border-radius:999px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;
+  background:linear-gradient(145deg,rgba(255,255,255,.18),rgba(255,255,255,.07));border:1px solid var(--line);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
 }
-@media (prefers-reduced-motion:reduce){ .orb{animation:none} .orb svg{transition:none} }
+#toast.on{opacity:1;transform:translate(-50%,0)}
+:focus-visible{outline:2px solid var(--sky);outline-offset:3px}
+@media (max-width:700px){.label{padding:8px 14px 9px}.label b{font-size:15px}.label small{font-size:11.5px}}
+@media (prefers-reduced-motion:reduce){#welcome,#bar,.label{transition-duration:.01s;transition-delay:0s!important}}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <a class="brand" href="/" aria-label="LHY Space 홈">
-      <img src="/logo-mark.svg" alt="">
-      <b>LHY</b><span>Space</span>
-    </a>
-    <div class="status">오픈 준비 중</div>
-  </header>
-
-  <main>
-    <section class="hero">
-      <div>
-        <h1>LHY Space<span class="ko">모든 걸 할 수 있는 공간</span></h1>
-        <p>일하고, 쉬고, 놀고, 대화하는 걸 한곳에서 할 수 있게 하나씩 문을 열고 있어요.</p>
-      </div>
-      <div class="orb" id="orb">
-        <svg viewBox="0 0 512 512" role="img" aria-label="LHY Space 로고">
-          <defs>
-            <radialGradient id="h-orb" cx="36%" cy="30%" r="80%">
-              <stop offset="0" stop-color="#D6EEFF"/><stop offset=".28" stop-color="#6FB3FF"/>
-              <stop offset=".65" stop-color="#2F6BFF"/><stop offset="1" stop-color="#0B2A8A"/>
-            </radialGradient>
-            <linearGradient id="h-rim" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset=".5" stop-color="#fff" stop-opacity=".05"/>
-              <stop offset="1" stop-color="#9ED0FF" stop-opacity=".6"/>
-            </linearGradient>
-            <linearGradient id="h-ring" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0" stop-color="#9ED0FF" stop-opacity=".15"/><stop offset=".5" stop-color="#fff" stop-opacity=".95"/>
-              <stop offset="1" stop-color="#9ED0FF" stop-opacity=".15"/>
-            </linearGradient>
-            <radialGradient id="h-spec" cx="50%" cy="50%" r="50%">
-              <stop offset="0" stop-color="#fff" stop-opacity=".85"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
-            </radialGradient>
-            <filter id="h-glow" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="7"/></filter>
-          </defs>
-          <g id="tilt" style="transform-origin:256px 256px">
-            <g transform="rotate(-22 256 256)">
-              <path d="M26 256A230 70 0 0 1 486 256" fill="none" stroke="url(#h-ring)" stroke-width="10" stroke-linecap="round" opacity=".5"/>
-              <g>
-                <circle r="26" fill="#9ED0FF" filter="url(#h-glow)"/>
-                <circle r="15" fill="#fff"/>
-                <animateMotion dur="10s" repeatCount="indefinite" path="M26 256A230 70 0 0 0 486 256A230 70 0 0 0 26 256" calcMode="linear"/>
-                <animate attributeName="opacity" dur="10s" repeatCount="indefinite" calcMode="discrete" values="0;1" keyTimes="0;.5"/>
-              </g>
-            </g>
-            <circle cx="256" cy="256" r="140" fill="url(#h-orb)"/>
-            <path d="M168 336A116 116 0 0 0 344 336" fill="none" stroke="#9ED0FF" stroke-width="6" stroke-linecap="round" opacity=".4"/>
-            <ellipse cx="212" cy="200" rx="62" ry="34" transform="rotate(-30 212 200)" fill="url(#h-spec)"/>
-            <circle cx="256" cy="256" r="139" fill="none" stroke="url(#h-rim)" stroke-width="3"/>
-            <g transform="rotate(-22 256 256)">
-              <path d="M26 256A230 70 0 0 0 486 256" fill="none" stroke="url(#h-ring)" stroke-width="12" stroke-linecap="round"/>
-              <g>
-                <circle r="26" fill="#9ED0FF" filter="url(#h-glow)"/>
-                <circle r="15" fill="#fff"/>
-                <animateMotion dur="10s" repeatCount="indefinite" path="M26 256A230 70 0 0 0 486 256A230 70 0 0 0 26 256" calcMode="linear"/>
-                <animate attributeName="opacity" dur="10s" repeatCount="indefinite" calcMode="discrete" values="1;0" keyTimes="0;.5"/>
-              </g>
-            </g>
-          </g>
-        </svg>
-      </div>
-    </section>
-
-    <section class="zones" aria-label="공간 목록">
-      <article class="zone z-work">
-        <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="6" y="8" width="28" height="24" rx="6"/><path d="M12 16h10M12 22h16M12 27h7"/></svg>
-        <div><h2>작업</h2><p>번역, 맞춤법, 파일 변환처럼 바로 꺼내 쓰는 도구를 모아둘 공간이에요.</p></div>
-        <span class="tag">준비 중</span>
-      </article>
-      <article class="zone z-rest">
-        <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M27 8a13 13 0 1 0 6 21A14 14 0 0 1 27 8z"/><path d="M30 6v4M28 8h4"/></svg>
-        <div><h2>여가</h2><p>쉬어가며 보고, 듣고, 기록하는 공간이에요.</p></div>
-        <span class="tag">준비 중</span>
-      </article>
-      <article class="zone z-game">
-        <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="5" y="12" width="30" height="18" rx="9"/><path d="M13 17v8M9 21h8M26 19.5v.1M30 23v.1"/></svg>
-        <div><h2>게임</h2><p>짧게 즐기고 랭킹으로 겨루는 공간이에요.</p></div>
-        <span class="tag">준비 중</span>
-      </article>
-      <article class="zone z-talk">
-        <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M7 11a5 5 0 0 1 5-5h16a5 5 0 0 1 5 5v11a5 5 0 0 1-5 5H18l-7 6v-6a5 5 0 0 1-4-5z"/><path d="M14 15h12M14 20h7"/></svg>
-        <div><h2>소통</h2><p>로그인하고 다른 사람과 이야기를 나누는 공간이에요.</p></div>
-        <span class="tag">준비 중</span>
-      </article>
-    </section>
-  </main>
-
-  <footer>© 2026 LHY Space</footer>
-</div>
+<canvas id="sky" tabindex="0" role="button" aria-label="은하 안으로 들어가기"></canvas>
+<h1 id="welcome">환영합니다.</h1>
+<header id="bar">
+  <a class="brand" href="/" aria-label="LHY Space 홈"><img src="/logo-mark.svg" alt=""><b>LHY</b><span>Space</span></a>
+  <button class="glass" id="back" type="button">은하 밖으로</button>
+</header>
+<div id="labels"></div>
+<div id="toast" role="status"></div>
 
 <script>
 (function(){
-  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var svg = document.querySelector('#orb svg');
-  if (reduce && svg.pauseAnimations) svg.pauseAnimations();
-  var tilt = document.getElementById('tilt');
-  if (!reduce && matchMedia('(pointer:fine)').matches) {
-    addEventListener('pointermove', function(e){
-      var x = (e.clientX / innerWidth - .5), y = (e.clientY / innerHeight - .5);
-      tilt.style.transform = 'rotate(' + (x * 8) + 'deg) translate(' + (x * 10) + 'px,' + (y * 10) + 'px)';
-    }, {passive:true});
+'use strict';
+var cv=document.getElementById('sky'), ctx=cv.getContext('2d');
+var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+var W,H,dpr,mobile,rnd=Math.random;
+
+function gauss(){var u=0,v=0;while(!u)u=rnd();while(!v)v=rnd();return Math.sqrt(-2*Math.log(u))*Math.cos(6.2832*v)}
+function rgb(h){return parseInt(h.slice(1,3),16)+','+parseInt(h.slice(3,5),16)+','+parseInt(h.slice(5,7),16)}
+function clamp(x,a,b){return x<a?a:x>b?b:x}
+function sm(a,b,x){x=clamp((x-a)/(b-a),0,1);return x*x*(3-2*x)}
+function ease(p){return p<.5?4*p*p*p:1-Math.pow(-2*p+2,3)/2}
+
+/* 은하 팔레트: [중심, 안쪽, 바깥, 포인트] */
+var PAL={
+  main:['#FFEBCF','#C4E2FF','#6FA8FF','#9A8FFF'],
+  work:['#F2F8FF','#9ED0FF','#3F7BFF','#7FE0FF'],
+  rest:['#E6FFFF','#7CE8F0','#3AA9FF','#B6F5E6'],
+  game:['#F1ECFF','#B3A6FF','#6068FF','#E0B8FF'],
+  talkA:['#FFFFFF','#8FD3FF','#4C86FF','#C7E8FF'],
+  talkB:['#FFF3E0','#C8B5FF','#7A7CFF','#FFD6F0']
+};
+
+/* 은하 하나를 별 데이터와 빛 번짐 이미지로 만든다 */
+function build(kind,n,pal,pal2,o){
+  o=o||{}; pal2=pal2||pal;
+  var X=new Float32Array(n),Y=new Float32Array(n),S=new Float32Array(n),K=new Uint8Array(n),bk={};
+  var arms=o.arms||2, tw=o.tw||5.4;
+  for(var i=0;i<n;i++){
+    var x,y,r,a,c=0,t=rnd();
+    if(kind==='spiral'){
+      if(t<.14){r=Math.sqrt(rnd())*1.08;a=rnd()*6.2832}
+      else if(t<.3){r=Math.abs(gauss())*.17;a=rnd()*6.2832}
+      else{r=Math.pow(rnd(),.8);a=(i%arms)*6.2832/arms+r*tw+gauss()*(.09+.3*r)}
+      x=Math.cos(a)*r;y=Math.sin(a)*r;
+    }else if(kind==='ring'){
+      a=rnd()*6.2832;
+      if(t<.8)r=.64+gauss()*.065; else if(t<.93)r=Math.abs(gauss())*.1; else r=rnd()*1.0;
+      x=Math.cos(a)*r;y=Math.sin(a)*r;
+    }else if(kind==='elliptic'){
+      a=rnd()*6.2832; r=t<.9?Math.abs(gauss())*.3:rnd()*.85;
+      x=Math.cos(a)*r;y=Math.sin(a)*r*.8;
+    }else{
+      c=i&1; a=rnd()*6.2832; r=Math.abs(gauss())*.2*(t<.1?2.2:1);
+      x=Math.cos(a)*r;y=Math.sin(a)*r;
+    }
+    X[i]=x;Y[i]=y;K[i]=c;
+    var rl=Math.sqrt(x*x+y*y), q=rnd(), ci;
+    if(q<.08)ci=3; else if(rl<.16)ci=q<.7?0:1; else if(rl<.55)ci=q<.6?1:2; else ci=q<.75?2:1;
+    var lv=rnd(); lv=lv<.5?0:lv<.86?1:2; if(rl<.2)lv=rl<.1?0:Math.min(lv,1);
+    var s=rnd(); S[i]=s<.85?1:s<.97?1.7:2.6;
+    var key=(c?12:0)+ci*3+lv; (bk[key]||(bk[key]=[])).push(i);
   }
-  if ('serviceWorker' in navigator) {
-    addEventListener('load', function(){ navigator.serviceWorker.register('/sw.js').catch(function(){}); });
+  var buckets=Object.keys(bk).map(function(k){
+    k=+k; var pl=k>=12?pal2:pal;
+    return {style:'rgba('+rgb(pl[((k%12)/3)|0])+','+[.35,.65,1][k%3]+')',idx:Uint32Array.from(bk[k])};
+  });
+  var glows=[], ng=kind==='binary'?2:1;
+  for(var c2=0;c2<ng;c2++){
+    var size=o.glow||512, cn=document.createElement('canvas'); cn.width=cn.height=size;
+    var g=cn.getContext('2d'), up=size/2.4, half=size/2, pl2=c2?pal2:pal, pb=(o.blobs||200)/n;
+    g.globalCompositeOperation='lighter';
+    for(var j=0;j<n;j++){
+      if(rnd()>pb||(kind==='binary'&&K[j]!==c2))continue;
+      var rr=Math.sqrt(X[j]*X[j]+Y[j]*Y[j]); if(rr<.28&&rnd()>.1)continue; var col=rgb(pl2[rr<.3?1:2]), rad=(.08+rnd()*.17)*up,
+          px=half+X[j]*up, py=half+Y[j]*up, gr=g.createRadialGradient(px,py,0,px,py,rad), al=(o.ga||.06)+rnd()*.05;
+      gr.addColorStop(0,'rgba('+col+','+al+')'); gr.addColorStop(1,'rgba('+col+',0)');
+      g.fillStyle=gr; g.fillRect(px-rad,py-rad,rad*2,rad*2);
+    }
+    var cr=(o.coreR||.42)*up, ca=o.coreA||.55, cg=g.createRadialGradient(half,half,0,half,half,cr);
+    cg.addColorStop(0,'rgba('+rgb(pl2[0])+','+ca+')'); cg.addColorStop(.35,'rgba('+rgb(pl2[1])+','+ca*.35+')'); cg.addColorStop(1,'rgba('+rgb(pl2[2])+',0)');
+    g.fillStyle=cg; g.fillRect(0,0,size,size);
+    glows.push(cn);
   }
+  return {kind:kind,X:X,Y:Y,S:S,K:K,buckets:buckets,glows:glows};
+}
+
+/* 은하 그리기. cx,cy,R은 모두 실제 픽셀 단위 */
+function drawGal(G,cx,cy,R,tilt,inc,rot,alpha,sizeMul,t,gk){
+  if(gk===undefined)gk=1;
+  if(alpha<.004||R<2)return;
+  var ci=Math.cos(inc),si=Math.sin(inc),cr=Math.cos(rot),sr=Math.sin(rot),phi=t*.45,bin=G.kind==='binary';
+  var ox=.36*Math.cos(phi),oy=.36*Math.sin(phi),Wd=cv.width,Hd=cv.height,pxs=dpr*sizeMul,k,b,j,i,x,y,rx,ry,sx,sy,s,idx;
+  ctx.save(); ctx.globalAlpha=Math.min(1,alpha)*gk; ctx.globalCompositeOperation='lighter';
+  ctx.translate(cx,cy); ctx.rotate(inc); ctx.scale(1,tilt); ctx.rotate(rot);
+  for(k=0;k<G.glows.length;k++){
+    ctx.save();
+    if(bin){var sg=k?-1:1; ctx.translate(sg*ox*R,sg*oy*R)}
+    ctx.drawImage(G.glows[k],-1.2*R,-1.2*R,2.4*R,2.4*R);
+    ctx.restore();
+  }
+  ctx.restore();
+  ctx.save(); ctx.globalAlpha=Math.min(1,alpha); ctx.globalCompositeOperation='lighter';
+  for(k=0;k<G.buckets.length;k++){
+    b=G.buckets[k]; ctx.fillStyle=b.style; idx=b.idx;
+    for(j=0;j<idx.length;j++){
+      i=idx[j]; x=G.X[i]; y=G.Y[i];
+      if(bin){ if(G.K[i]){x-=ox;y-=oy}else{x+=ox;y+=oy} }
+      rx=x*cr-y*sr; ry=(x*sr+y*cr)*tilt;
+      sx=cx+R*(rx*ci-ry*si); sy=cy+R*(rx*si+ry*ci);
+      if(sx<-6||sx>Wd+6||sy<-6||sy>Hd+6)continue;
+      s=G.S[i]*pxs; ctx.fillRect(sx-s/2,sy-s/2,s,s);
+    }
+  }
+  ctx.restore();
+}
+
+/* 배경의 먼 별 */
+var BG=[]; for(var q0=0;q0<420;q0++)BG.push({a:rnd()*6.2832,d:.04+rnd()*1.1,z:.3+rnd()*.9,s:.6+rnd()*1.3,o:.25+rnd()*.6,p:rnd()*6.28});
+
+/* 서비스 은하 */
+var SERV=[
+  {name:'작업',sub:'도구 모음',tilt:.62,inc:-.35,dir:1},
+  {name:'여가',sub:'쉬어가는 곳',tilt:.5,inc:.3,dir:-1},
+  {name:'게임',sub:'함께 겨루기',tilt:.7,inc:-.6,dir:1},
+  {name:'소통',sub:'이야기 나누기',tilt:.8,inc:.15,dir:1}
+];
+var main, labelsEl=document.getElementById('labels'), labelBtns=[], hot=-1, mainR=300, mcx=0, mcy=0;
+function init(){
+  mobile=innerWidth<700;
+  var nMain=mobile?6000:14000, nMini=mobile?1500:3200;
+  main=build('spiral',nMain,PAL.main,null,{arms:2,tw:5.6,glow:1024,blobs:420,coreR:.34,coreA:.6});
+  var cfg=[
+    ['spiral',PAL.work,null,{arms:2,tw:4.8,coreA:.35,coreR:.3,ga:.08}],
+    ['ring',PAL.rest,null,{coreA:.2,coreR:.25,ga:.08}],
+    ['elliptic',PAL.game,null,{coreR:.4,coreA:.45,ga:.08}],
+    ['binary',PAL.talkA,PAL.talkB,{coreR:.35,coreA:.4,ga:.08}]
+  ];
+  SERV.forEach(function(s,i){
+    s.g=build(cfg[i][0],nMini,cfg[i][1],cfg[i][2],cfg[i][3]); s.seed=rnd()*6; s.hv=0;
+    var b=document.createElement('button'); b.type='button'; b.className='label';
+    b.innerHTML='<b>'+s.name+'</b><small>'+s.sub+'</small>';
+    b.addEventListener('click',function(){toast(s.name+' 공간은 아직 준비 중이에요.')});
+    b.addEventListener('mouseenter',function(){hot=i}); b.addEventListener('mouseleave',function(){hot=-1});
+    labelsEl.appendChild(b); labelBtns.push(b);
+  });
+}
+
+function layout(){
+  dpr=Math.min(2,window.devicePixelRatio||1); W=innerWidth; H=innerHeight;
+  cv.width=Math.round(W*dpr); cv.height=Math.round(H*dpr);
+  mobile=W<700; mcx=W/2; mcy=H*(mobile?.56:.54);
+  mainR=mobile?Math.min(W*.52,H*.34):Math.min(W*.47,H*.8);
+  var P;
+  if(mobile){var u=W*.2; P=[[.3,.24,u],[.7,.4,u*.92],[.3,.57,u*.86],[.7,.74,u*.95]]}
+  else{var m=Math.min(W,H); P=[[.26,.42,m*.24],[.71,.34,m*.21],[.34,.77,m*.19],[.73,.72,m*.22]]}
+  SERV.forEach(function(s,i){
+    s.fx=mobile?P[i][0]*W:P[i][0]*W; s.fy=P[i][1]*H; s.R=P[i][2];
+    var l=labelBtns[i]; l.style.left=s.fx+'px'; l.style.top=(s.fy+s.R*s.tilt*1.02+14)+'px';
+  });
+}
+
+/* 상태: prog 0 = 바깥 큰 은하, 1 = 은하 안 */
+var prog=0,target=0,lastE=0,t=0,last=performance.now(),introT=0,hoverMain=0;
+var welcome=document.getElementById('welcome'),bar=document.getElementById('bar'),toastEl=document.getElementById('toast');
+
+function enter(){ if(target===1)return; target=1; welcome.classList.add('hide'); bar.classList.add('on'); cv.tabIndex=-1; cv.classList.remove('go') }
+function leave(){ if(target===0)return; target=0; labelsEl.classList.remove('on'); bar.classList.remove('on'); welcome.classList.remove('hide'); cv.tabIndex=0 }
+var tt; function toast(m){toastEl.textContent=m;toastEl.classList.add('on');clearTimeout(tt);tt=setTimeout(function(){toastEl.classList.remove('on')},2200)}
+
+function frame(now){
+  var dt=Math.min(.05,(now-last)/1000); last=now; t+=dt;
+  if(introT<1)introT=Math.min(1,introT+dt/(reduce?.5:2.4));
+  if(prog!==target){ var step=dt/(reduce?.6:(target>prog?3:2.4)); prog=target>prog?Math.min(target,prog+step):Math.max(target,prog-step) }
+  var e=ease(prog), Wd=cv.width, Hd=cv.height, cx=mcx*dpr, cy=mcy*dpr;
+  ctx.clearRect(0,0,Wd,Hd);
+
+  /* 먼 별: 평소엔 반짝, 이동 중엔 바깥으로 흐름 */
+  var diag=Math.sqrt(Wd*Wd+Hd*Hd)*.55, speed=Math.abs(e-lastE)/Math.max(dt,.001), span=diag*1.1, asp=Hd/Wd*1.2;
+  ctx.save(); ctx.globalCompositeOperation='lighter';
+  for(var q=0;q<BG.length;q++){
+    var s=BG[q], d0=s.d*diag, d=(d0+e*diag*2.4*s.z)%span, ca=Math.cos(s.a), sa=Math.sin(s.a);
+    var al=s.o*(.65+.35*Math.sin(t*1.3+s.p)), x=cx+ca*d, y=cy+sa*d*asp;
+    if(speed>.04){
+      var dp=(d0+lastE*diag*2.4*s.z)%span;
+      if(Math.abs(dp-d)<diag*.4){
+        ctx.strokeStyle='rgba(200,225,255,'+Math.min(.7,al*(.4+speed*1.6))+')'; ctx.lineWidth=s.s*dpr*.8;
+        ctx.beginPath(); ctx.moveTo(cx+ca*dp,cy+sa*dp*asp); ctx.lineTo(x,y); ctx.stroke(); continue;
+      }
+    }
+    ctx.fillStyle='rgba(215,232,255,'+al+')'; var z=s.s*dpr; ctx.fillRect(x-z/2,y-z/2,z,z);
+  }
+  ctx.restore(); lastE=e;
+
+  /* 큰 은하 */
+  var zoom=reduce?1+e*.12:Math.exp(Math.log(11)*e), a1=(1-sm(.42,.9,e))*ease(introT), ip=.93+.07*ease(introT);
+  hoverMain+=((cv.classList.contains('go')&&target===0?1:0)-hoverMain)*.1;
+  if(a1>0){
+    var tl=.5+.35*e;
+    drawGal(main,cx,cy,mainR*dpr*zoom*ip*(1+.015*hoverMain),mobile?Math.max(tl,.62):tl,-.32,reduce?.4:t*.035+.4,a1*(1+.18*hoverMain),1+Math.min(zoom-1,3)*.3,t,1-sm(.1,.55,e));
+  }
+
+  /* 서비스 은하들 */
+  for(var i=0;i<SERV.length;i++){
+    var sv=SERV[i], local=clamp((e-.42-i*.05)/(.58-i*.05),0,1), qe=1-Math.pow(1-local,3);
+    if(local<=0)continue;
+    sv.hv+=((hot===i?1:0)-sv.hv)*.12;
+    var px=cx+(sv.fx*dpr-cx)*qe, py=cy+(sv.fy*dpr-cy)*qe, sc=(.2+.8*qe)*(1+.08*sv.hv);
+    drawGal(sv.g,px,py,sv.R*dpr*sc,sv.tilt,sv.inc,reduce?sv.seed:t*.07*sv.dir+sv.seed,qe*(1+.35*sv.hv),1,t+sv.seed*3);
+  }
+  if(prog>=1&&target===1&&!labelsEl.classList.contains('on'))labelsEl.classList.add('on');
+  requestAnimationFrame(frame);
+}
+
+/* 입력 */
+function hitMain(px,py){
+  var dx=px-mcx,dy=py-mcy,ci=Math.cos(-.32),si=Math.sin(-.32),ux=dx*ci+dy*si,uy=-dx*si+dy*ci,tl=mobile?.62:.5;
+  return (ux*ux)/(mainR*mainR)+(uy*uy)/(mainR*mainR*tl*tl)<1;
+}
+function hitMini(px,py){
+  var best=-1,bd=9;
+  SERV.forEach(function(s,i){
+    var dx=px-s.fx,dy=py-s.fy,ci=Math.cos(s.inc),si=Math.sin(s.inc),ux=dx*ci+dy*si,uy=-dx*si+dy*ci;
+    var d=(ux*ux)/(s.R*s.R)+(uy*uy)/(s.R*s.R*s.tilt*s.tilt); if(d<1.15&&d<bd){bd=d;best=i}
+  });
+  return best;
+}
+cv.addEventListener('pointermove',function(e){
+  if(target===0&&prog===0){cv.classList.toggle('go',hitMain(e.clientX,e.clientY))}
+  else if(prog===1){var h=hitMini(e.clientX,e.clientY);hot=h;cv.classList.toggle('go',h>-1)}
+});
+cv.addEventListener('pointerleave',function(){if(prog===1)hot=-1;cv.classList.remove('go')});
+cv.addEventListener('click',function(e){
+  if(target===0){ if(prog===0&&hitMain(e.clientX,e.clientY))enter() }
+  else if(prog===1){var h=hitMini(e.clientX,e.clientY); if(h>-1)toast(SERV[h].name+' 공간은 아직 준비 중이에요.')}
+});
+cv.addEventListener('keydown',function(e){ if(target===0&&(e.key==='Enter'||e.key===' ')){e.preventDefault();enter()} });
+addEventListener('keydown',function(e){ if(e.key==='Escape')leave() });
+document.getElementById('back').addEventListener('click',leave);
+addEventListener('resize',layout);
+
+init(); layout();
+requestAnimationFrame(function(n){last=n;frame(n)});
+setTimeout(function(){welcome.classList.add('show')},50);
+if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){})})}
 })();
 </script>
 </body>

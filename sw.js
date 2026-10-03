@@ -1,4 +1,4 @@
-const CACHE = 'lhyspace-v1';
+const CACHE = 'lhyspace-v2';
 const SHELL = ['/', '/logo-mark.svg', '/favicon.svg', '/manifest.webmanifest'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
