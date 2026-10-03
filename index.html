@@ -180,8 +180,8 @@ function build(kind,n,pal,pal2,o){
   }
   var dust=null;
   if(o.dust){
-    dust=document.createElement('canvas');dust.width=dust.height=1024;var dg=dust.getContext('2d'),du=1024/2.4;
-    for(var di=0;di<520;di++){var dr=.18+rnd()*.78,da=((di&1)?0:3.1416)+dr*tw-.17+gauss()*.05,dx=512+Math.cos(da)*dr*du,dy=512+Math.sin(da)*dr*du,drad=(.04+rnd()*.06)*du,dgr=dg.createRadialGradient(dx,dy,0,dx,dy,drad);dgr.addColorStop(0,'rgba(4,10,30,.13)');dgr.addColorStop(1,'rgba(4,10,30,0)');dg.fillStyle=dgr;dg.fillRect(dx-drad,dy-drad,drad*2,drad*2)}
+    dust=document.createElement('canvas');dust.width=dust.height=512;var dg=dust.getContext('2d'),du=512/2.4;
+    for(var di=0;di<520;di++){var dr=.18+rnd()*.78,da=((di&1)?0:3.1416)+dr*tw-.17+gauss()*.05,dx=256+Math.cos(da)*dr*du,dy=256+Math.sin(da)*dr*du,drad=(.04+rnd()*.06)*du,dgr=dg.createRadialGradient(dx,dy,0,dx,dy,drad);dgr.addColorStop(0,'rgba(4,10,30,.13)');dgr.addColorStop(1,'rgba(4,10,30,0)');dg.fillStyle=dgr;dg.fillRect(dx-drad,dy-drad,drad*2,drad*2)}
   }
   return {kind:kind,X:X,Y:Y,S:S,K:K,buckets:buckets,glows:glows,dust:dust};
 }
@@ -191,7 +191,7 @@ function drawGal(G,cx,cy,R,tilt,inc,rot,alpha,sizeMul,t,gk){
   if(gk===undefined)gk=1;
   if(alpha<.004||R<2)return;
   var ci=Math.cos(inc),si=Math.sin(inc),cr=Math.cos(rot),sr=Math.sin(rot),phi=t*.45,bin=G.kind==='binary';
-  var ox=.36*Math.cos(phi),oy=.36*Math.sin(phi),Wd=cv.width,Hd=cv.height,pxs=dpr*sizeMul,k,b,j,i,x,y,rx,ry,sx,sy,s,idx;
+  var ox=.36*Math.cos(phi),oy=.36*Math.sin(phi),Wd=cv.width,Hd=cv.height,pxs=dpr*sizeMul,k,b,j,jn,i,x,y,rx,ry,sx,sy,s,idx;
   ctx.save(); ctx.globalAlpha=Math.min(1,alpha)*gk; ctx.globalCompositeOperation='lighter';
   ctx.translate(cx,cy); ctx.rotate(inc); ctx.scale(1,tilt); ctx.rotate(rot);
   for(k=0;k<G.glows.length;k++){
@@ -204,7 +204,7 @@ function drawGal(G,cx,cy,R,tilt,inc,rot,alpha,sizeMul,t,gk){
   ctx.save(); ctx.globalAlpha=Math.min(1,alpha); ctx.globalCompositeOperation='lighter';
   for(k=0;k<G.buckets.length;k++){
     b=G.buckets[k]; ctx.fillStyle=b.style; idx=b.idx;
-    for(j=0;j<idx.length;j++){
+    for(j=0,jn=(idx.length*qual)|0;j<jn;j++){
       i=idx[j]; x=G.X[i]; y=G.Y[i];
       if(bin){ if(G.K[i]){x-=ox;y-=oy}else{x+=ox;y+=oy} }
       rx=x*cr-y*sr; ry=(x*sr+y*cr)*tilt;
@@ -246,8 +246,8 @@ var SERV=[
 var main, labelsEl=document.getElementById('labels'), labelBtns=[], hot=-1, mainR=300, mcx=0, mcy=0;
 function init(){
   mobile=innerWidth<700;
-  var nMain=mobile?9000:22000, nMini=mobile?1500:3200;
-  main=build('spiral',nMain,PAL.main,null,{arms:2,tw:4.6,glow:1024,blobs:520,coreR:.36,coreA:.5,grand:true,dust:true,halo:.14,ga:.07});
+  var nMain=mobile?8000:18000, nMini=mobile?1500:3200;
+  main=build('spiral',nMain,PAL.main,null,{arms:2,tw:4.6,glow:768,blobs:520,coreR:.36,coreA:.5,grand:true,dust:true,halo:.14,ga:.07});
   var cfg=[
     ['spiral',PAL.work,null,{arms:2,tw:4.8,coreA:.35,coreR:.3,ga:.08}],
     ['ring',PAL.rest,null,{coreA:.2,coreR:.25,ga:.08}],
@@ -265,7 +265,7 @@ function init(){
 }
 
 function layout(){
-  dpr=Math.min(2,window.devicePixelRatio||1); W=innerWidth; H=innerHeight;
+  dpr=Math.min(1.5,window.devicePixelRatio||1); W=innerWidth; H=innerHeight;
   cv.width=Math.round(W*dpr); cv.height=Math.round(H*dpr);
   mobile=W<700; mcx=W/2; mcy=H*(mobile?.56:.57);
   mainR=mobile?Math.min(W*.37,H*.26):Math.min(W*.35,(H-200)/1.34);
@@ -279,7 +279,7 @@ function layout(){
 }
 
 /* 상태: prog 0 = 바깥 큰 은하, 1 = 은하 안 */
-var prog=0,target=0,lastE=0,t=0,last=performance.now(),introT=0,hoverMain=0;
+var qual=1,fAcc=0,fN=0,prog=0,target=0,lastE=0,t=0,last=performance.now(),introT=0,hoverMain=0;
 var welcome=document.getElementById('welcome'),bar=document.getElementById('bar'),toastEl=document.getElementById('toast');
 
 function enter(){ if(target===1)return; target=1; welcome.classList.add('hide'); bar.classList.add('on'); cv.tabIndex=-1; cv.classList.remove('go') }
@@ -287,7 +287,8 @@ function leave(){ if(target===0)return; target=0; labelsEl.classList.remove('on'
 var tt; function toast(m){toastEl.textContent=m;toastEl.classList.add('on');clearTimeout(tt);tt=setTimeout(function(){toastEl.classList.remove('on')},2200)}
 
 function frame(now){
-  var dt=Math.min(.05,(now-last)/1000); last=now; t+=dt;
+  var raw=(now-last)/1000, dt=Math.min(.05,raw); last=now; t+=dt; fAcc+=raw;
+  if(++fN>=30){var avg=fAcc/fN*1000; if(avg>30)qual=Math.max(.3,qual*.8); else if(avg<19&&qual<1)qual=Math.min(1,qual*1.12); fAcc=0; fN=0}
   if(introT<1)introT=Math.min(1,introT+dt/(reduce?.5:2.4));
   if(prog!==target){ var step=dt/(reduce?.6:(target>prog?3:2.4)); prog=target>prog?Math.min(target,prog+step):Math.max(target,prog-step) }
   var e=ease(prog), Wd=cv.width, Hd=cv.height, cx=mcx*dpr, cy=mcy*dpr;
