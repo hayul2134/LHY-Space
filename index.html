@@ -109,6 +109,13 @@ body{background:
 #me.hot{pointer-events:auto}
 #me button{display:none;margin-left:2px;padding:4px 9px;border-radius:999px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.14);color:var(--ice);font:500 10.5px/1 var(--body);cursor:pointer}
 #me.hot button{display:inline-block}
+.acts{display:flex;gap:8px;align-items:center;pointer-events:none}
+#login{pointer-events:auto;display:flex;align-items:center;gap:8px;white-space:nowrap}
+#login img{width:22px;height:22px;border-radius:50%}
+#bar:not(.on) #back{display:none}
+#umenu{position:fixed;right:clamp(18px,3.4vw,52px);top:calc(74px + env(safe-area-inset-top));padding:12px 14px;border-radius:18px;border:1px solid var(--line);background:linear-gradient(145deg,rgba(255,255,255,.16),rgba(255,255,255,.06));backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);display:none;flex-direction:column;gap:10px;font:400 12px var(--body);color:var(--muted);box-shadow:0 18px 40px rgba(2,8,30,.45);z-index:5}
+#umenu.on{display:flex}
+#umenu button{padding:8px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.1);color:var(--ice);font:500 13px var(--body);cursor:pointer}
 #plp{position:fixed;right:clamp(14px,3vw,40px);top:96px;width:min(360px,calc(100vw - 28px));max-height:calc(100vh - 130px);overflow:auto;padding:16px 16px 18px;border-radius:26px;border:1px solid var(--line);background:linear-gradient(145deg,rgba(255,255,255,.14),rgba(255,255,255,.05));backdrop-filter:blur(26px) saturate(170%);-webkit-backdrop-filter:blur(26px) saturate(170%);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 24px 50px rgba(2,8,30,.45);opacity:0;pointer-events:none;transform:translateX(18px);transition:opacity .6s ease .5s,transform .6s ease .5s}
 #plp.on{opacity:1;pointer-events:auto;transform:none}
 #plp .tabs{display:flex;gap:6px;margin-bottom:14px;padding:4px;border-radius:999px;background:rgba(255,255,255,.07)}
@@ -151,13 +158,14 @@ body{background:
     <em class="mk"><img src="/logo-mark.svg" alt="">
     </em><svg class="wm" viewBox="-2 -12 412 78" role="img" aria-label="LHY Space" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linejoin="miter" stroke-miterlimit="10"><g stroke-width="9"><path transform="translate(4.5 0)" d="M0.0 0.0 L0.0 38.0 L6.0 44.0 L34.0 44.0"/><path transform="translate(57.5 0)" d="M0.0 0.0 L0.0 44.0 M34.0 0.0 L34.0 44.0 M0.0 22.0 L34.0 22.0"/><path transform="translate(110.5 0)" d="M2.0 0.0 L17.0 20.2 L32.0 0.0 M17.0 20.2 L17.0 44.0"/></g><g stroke-width="5.5"><path transform="translate(179.5 -1.75)" d="M32.0 0.0 L6.0 0.0 L0.0 6.0 L0.0 20.1 L6.0 23.8 L26.0 23.8 L32.0 27.4 L32.0 41.5 L26.0 47.5 L0.0 47.5"/><path transform="translate(227.0 -1.75)" d="M0.0 47.5 L0.0 0.0 L26.0 0.0 L32.0 6.0 L32.0 17.8 L26.0 23.8 L0.0 23.8"/><path transform="translate(274.5 -1.75)" d="M0.0 47.5 L0.0 6.0 L6.0 0.0 L26.0 0.0 L32.0 6.0 L32.0 47.5 M0.0 26.6 L32.0 26.6"/><path transform="translate(322.0 -1.75)" d="M32.0 0.0 L6.0 0.0 L0.0 6.0 L0.0 41.5 L6.0 47.5 L32.0 47.5"/><path transform="translate(369.5 -1.75)" d="M32.0 0.0 L0.0 0.0 L0.0 47.5 L32.0 47.5 M0.0 23.8 L27.0 23.8"/></g></g></svg>
   </a>
-  <button class="glass" id="back" type="button">은하 밖으로</button>
+  <div class="acts"><button class="glass" id="login" type="button">구글로 로그인</button><button class="glass" id="back" type="button">은하 밖으로</button></div>
 </header>
 <aside id="tag" aria-hidden="true">
   <svg viewBox="0 0 26 100"><path d="M6 3 L14 20 L8 48 L16 76 L10 97"/><path d="M8 48 L1 41"/>
     <circle cx="6" cy="3" r="2.4"/><circle cx="14" cy="20" r="3.6"/><circle cx="8" cy="48" r="3.6"/><circle cx="1" cy="41" r="2.4"/><circle cx="16" cy="76" r="3.6"/><circle cx="10" cy="97" r="2.4"/></svg>
   <p><span>YOUR</span><span>OWN</span><span>SPACE</span><em id="tagc"></em></p>
 </aside>
+<div id="umenu"><span id="uemail"></span><button type="button" id="logout">로그아웃</button></div>
 <div id="labels"></div>
 <div id="me"><span><i></i><b>내 별</b><button type="button" id="mec">색 바꾸기</button></span></div>
 <div id="sub" aria-hidden="true"><b>ONE GALAXY · YOUR OWN SPACE</b><small>하나의 우주, 나만의 공간</small></div>
@@ -169,7 +177,8 @@ body{background:
     <div class="row"><span>고리</span><div id="ctl-pl-r" class="opts"></div></div>
     <div class="row"><span>위성</span><div id="ctl-pl-m" class="opts"></div></div>
     <div class="row"><span>공개</span><div id="ctl-pl-v" class="opts"></div></div>
-    <p class="note">지금은 이 기기에만 저장되고 나만 볼 수 있어요. 로그인이 열리면 친구와 모두가 내 행성에 놀러 올 수 있어요.</p>
+    <p class="note" id="plnote">지금은 이 기기에만 저장되고 나만 볼 수 있어요.</p>
+    <button type="button" id="plogin" class="glass big">구글로 로그인해서 저장하기</button>
   </div>
   <div id="pane-sh" hidden>
     <input id="in-sh-n" maxlength="12" placeholder="우주선 이름" aria-label="우주선 이름">
@@ -181,7 +190,7 @@ body{background:
   </div>
 </section>
 <div id="plname"><b></b><small></small></div>
-<div id="plhint">친구와 모두의 행성은 로그인이 열리면 방문할 수 있어요</div>
+<div id="plhint">친구와 모두의 행성 방문은 곧 열려요</div>
 <div id="toast" role="status"></div>
 
 <script>
@@ -190,6 +199,7 @@ body{background:
 var cv=document.getElementById('sky'), ctx=cv.getContext('2d');
 var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 var W,H,dpr,mobile,rnd=Math.random;
+var FB={user:null,loading:null,push:null};
 
 /* 나만의 공간: 이 기기에만 저장되는 '내 별'과 '내 별자리' (로그인이 생기면 계정으로 옮긴다) */
 var ME={v:0,day:'',sv:[],c:Math.floor(rnd()*5),s:rnd()}, ME_NEW=true;
@@ -198,7 +208,7 @@ ME.sv=ME.sv||[]; ME.c=ME.c|0; ME.s=ME.s||rnd();
 ME.pl=ME.pl||{n:'나의 행성',p:(ME.c|0)%6,r:0,m:1,v:'me'}; ME.sh=ME.sh||{h:0,c:0,f:0,e:0,n:'내 우주선'};
 var TODAY=new Date().toISOString().slice(0,10);
 if(ME.day!==TODAY){ME.v=(ME.v||0)+1;ME.day=TODAY}
-function saveMe(){try{localStorage.setItem('lhy.me',JSON.stringify(ME))}catch(e){}}
+function saveMe(){try{localStorage.setItem('lhy.me',JSON.stringify(ME))}catch(e){} if(FB.user&&FB.F)cloudPush(false)}
 saveMe();
 var TAGORD=[0,1,3,2,4,5];
 function paintTag(pop){
@@ -435,6 +445,69 @@ function drawMe(cx,cy,R,tilt,inc,rot,a,t,ms){
   meEl.querySelector('i').style.background='rgb('+col+')';
 }
 
+/* ===== 구글 로그인 + 계정 저장 (Firebase 무료 요금제) ===== */
+var FBCFG={apiKey:"AIzaSyBrL7YOvK6XpuOjZG9GakpPrV6RiGNSFVs",authDomain:"lhy-space.firebaseapp.com",projectId:"lhy-space",storageBucket:"lhy-space.firebasestorage.app",messagingSenderId:"842470222976",appId:"1:842470222976:web:e163897f6e51ffa7274a65"};
+var FBU='https://www.gstatic.com/firebasejs/10.14.1/';
+function fbLoad(){
+  if(FB.loading)return FB.loading;
+  FB.loading=Promise.all([import(FBU+'firebase-app.js'),import(FBU+'firebase-auth.js'),import(FBU+'firebase-firestore.js')]).then(function(m){
+    var app=m[0].initializeApp(FBCFG); FB.A=m[1]; FB.F=m[2];
+    FB.auth=FB.A.getAuth(app); FB.db=FB.F.getFirestore(app);
+    FB.A.onAuthStateChanged(FB.auth,onUser);
+    return true;
+  }).catch(function(e){FB.loading=null;throw e});
+  return FB.loading;
+}
+function onUser(u){
+  FB.user=u||null;
+  try{if(u)localStorage.setItem('lhy.auth','1'); else localStorage.removeItem('lhy.auth')}catch(e){}
+  paintLogin();
+  if(u)cloudPull();
+}
+function paintLogin(){
+  var b=document.getElementById('login'), u=FB.user; if(!b)return;
+  b.textContent='';
+  if(u){
+    if(u.photoURL){var im=document.createElement('img'); im.alt=''; im.referrerPolicy='no-referrer'; im.src=u.photoURL; b.appendChild(im)}
+    var sp=document.createElement('span'); sp.textContent=(u.displayName||'내 계정').split(' ')[0]; b.appendChild(sp);
+    document.getElementById('uemail').textContent=u.email||'';
+  }else{
+    b.textContent='구글로 로그인'; document.getElementById('umenu').classList.remove('on');
+  }
+  var pl=document.getElementById('plogin'), note=document.getElementById('plnote');
+  if(pl)pl.style.display=u?'none':'';
+  if(note)note.textContent=u?'내 계정에 저장돼요. 다른 기기에서도 같은 행성과 우주선을 쓸 수 있어요. 공개 범위는 다음 단계에서 적용돼요.':'지금은 이 기기에만 저장되고 나만 볼 수 있어요. 구글로 로그인하면 다른 기기에서도 쓸 수 있어요.';
+  var w=document.getElementById('welcome');
+  if(u&&w&&!w.dataset.named){w.dataset.named='1'; w.textContent='환영합니다, '+(u.displayName||'').split(' ')[0]+'님.'}
+}
+function doLogin(){
+  fbLoad().then(function(){return FB.A.signInWithPopup(FB.auth,new FB.A.GoogleAuthProvider())}).then(function(){toast('로그인했어요. 내 행성이 계정에 저장돼요.')}).catch(function(e){
+    var c=(e&&e.code)||''; if(c==='auth/popup-closed-by-user'||c==='auth/cancelled-popup-request')return;
+    toast(c==='auth/popup-blocked'?'팝업이 막혔어요. 팝업을 허용하고 다시 눌러 주세요.':c==='auth/unauthorized-domain'?'이 주소는 아직 로그인 허용 목록에 없어요.':'로그인에 실패했어요. 잠시 뒤에 다시 시도해 주세요.');
+  });
+}
+function doLogout(){ document.getElementById('umenu').classList.remove('on'); if(FB.auth)FB.A.signOut(FB.auth).then(function(){toast('로그아웃했어요.')}) }
+function cloudPull(){
+  FB.F.getDoc(FB.F.doc(FB.db,'users',FB.user.uid)).then(function(s){
+    if(s.exists()){
+      var d=s.data();
+      if(d.pl)ME.pl=d.pl; if(d.sh)ME.sh=d.sh;
+      if(typeof d.c==='number')ME.c=d.c; if(typeof d.s==='number')ME.s=d.s;
+      (d.sv||[]).forEach(function(n){if(ME.sv.indexOf(n)<0)ME.sv.push(n)});
+      ME.v=Math.max(ME.v||0,d.v||0);
+      try{localStorage.setItem('lhy.me',JSON.stringify(ME))}catch(e){}
+      paintTag(false); if(plPanel)refreshPanel();
+    }
+    cloudPush(true);
+  }).catch(function(){toast('계정에서 불러오지 못했어요. 이 기기의 설정으로 계속해요.')});
+}
+function cloudPush(now){
+  if(!FB.user||!FB.db)return;
+  var go=function(){FB.push=null; FB.F.setDoc(FB.F.doc(FB.db,'users',FB.user.uid),{pl:ME.pl,sh:ME.sh,sv:ME.sv,v:ME.v,c:ME.c,s:ME.s,day:ME.day,u:Date.now()},{merge:true}).catch(function(){})};
+  if(now){go();return}
+  clearTimeout(FB.push); FB.push=setTimeout(go,900);
+}
+
 /* ===== 내 행성 · 내 우주선 (1단계: 이 기기에만 저장) ===== */
 var PLP=[['바다','#BFE6FF','#3A86FF','#0A2A7A','#D6EEFF'],['오로라','#D8FFF0','#34C9A0','#0B4E52','#EFFFF8'],['사막','#FFE2B8','#E39A4A','#6E3410','#FFEFD6'],['성운','#EBDDFF','#8A63FF','#2A1670','#F6EEFF'],['장미','#FFD3DE','#E0527A','#60102C','#FFEEF2'],['얼음','#FFFFFF','#9CC6E6','#34587A','#FFFFFF']];
 var SHC=['#EAF4FF','#8FD3FF','#FFD6A8','#E0B8FF','#FFB7C5','#B6F5E6'], FLC=['#6FB3FF','#FF9A4A','#7CFFD8','#FF7BD0','#FFE066','#FFFFFF'];
@@ -562,7 +635,7 @@ var CTL=[['pl','p','chip',[0,1,2,3,4,5],PLP.map(function(p){return p[0]}),PLP.ma
          ['sh','h','sg',[0,1,2,3],HULLN],['sh','c','chip',[0,1,2,3,4,5],['흰색','하늘','살구','연보라','분홍','민트'],SHC],['sh','f','chip',[0,1,2,3,4,5],['푸른 불꽃','주황 불꽃','민트 불꽃','분홍 불꽃','노란 불꽃','흰 불꽃'],FLC],['sh','e','sg',[0,1,2,3,4,5],EMBN]];
 function pick(o,k,v){
   ME[o][k]=v; saveMe(); refreshPanel();
-  if(o==='pl'&&k==='v'&&v!=='me')toast('지금은 나만 볼 수 있어요. 로그인이 열리면 '+(v==='fr'?'친구만':'모두')+' 놀러 올 수 있게 적용돼요.');
+  if(o==='pl'&&k==='v'&&v!=='me')toast('지금은 나만 볼 수 있어요. '+(v==='fr'?'친구만':'모두')+' 공개는 다음 단계에서 열려요.');
 }
 function refreshPanel(){
   CTL.forEach(function(c){var el=document.getElementById('ctl-'+c[0]+'-'+c[1]); if(!el)return; [].forEach.call(el.children,function(b,i){b.classList.toggle('on',ME[c[0]][c[1]]===c[3][i])})});
@@ -768,6 +841,16 @@ addEventListener('resize',layout);
 addEventListener('pointermove',function(e){tx3=e.clientX/innerWidth-.5;ty3=e.clientY/innerHeight-.5},{passive:true});
 
 init(); layout(); paintTag(false);
+(function(){
+  var lb=document.getElementById('login'), um=document.getElementById('umenu');
+  lb.addEventListener('pointerenter',function(){fbLoad().catch(function(){})}); lb.addEventListener('touchstart',function(){fbLoad().catch(function(){})},{passive:true});
+  lb.addEventListener('click',function(e){e.stopPropagation(); if(FB.user)um.classList.toggle('on'); else doLogin()});
+  document.getElementById('logout').addEventListener('click',doLogout);
+  document.getElementById('plogin').addEventListener('click',doLogin);
+  document.addEventListener('click',function(e){if(!um.contains(e.target))um.classList.remove('on')});
+  try{if(localStorage.getItem('lhy.auth')==='1')fbLoad().catch(function(){})}catch(e){}
+  setTimeout(function(){fbLoad().catch(function(){})},7000);
+})();
 document.getElementById('mec').addEventListener('click',function(e){e.stopPropagation();ME.c=(ME.c+1)%5;saveMe()});
 (function(){var m=document.getElementById('me');m.addEventListener('mouseenter',function(){meOver=true});m.addEventListener('mouseleave',function(){meOver=false})})();
 if(!ME_NEW)welcome.textContent='다시 오신 걸 환영합니다.';
