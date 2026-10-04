@@ -152,6 +152,13 @@ body{background:
 #rep .rbox>b,#mk .rbox>b{font:700 15px var(--body);text-align:center}
 #mk p{font:400 12.5px/1.6 var(--body);color:var(--muted);text-align:center;margin:0}
 #mk input{width:100%;padding:11px 13px;border-radius:14px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.08);color:var(--ice);font:500 15px var(--body);outline:none;text-align:center}
+#mk input::placeholder{color:rgba(226,236,255,.74)}
+#mk .mkr{display:flex;flex-direction:column;align-items:center;gap:6px}
+#mk .mkr button{padding:7px 14px;font-size:12.5px}
+#mk small{display:block;min-height:17px;font:400 11.5px/1.5 var(--body);color:rgba(222,236,255,.8);text-align:center}
+#mk .mkh{display:flex;gap:8px;justify-content:center}
+#mk .mkh button{width:38px;height:34px;border-radius:12px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.08);color:var(--ice);font-size:16px;cursor:pointer}
+#mk .mkh button.on{background:rgba(111,179,255,.35);border-color:rgba(160,205,255,.85)}
 #mk input:focus{border-color:rgba(160,205,255,.85)}
 #mk .mkc{display:flex;gap:10px;justify-content:center}
 #mk .mkc button{width:30px;height:30px;border-radius:50%;border:2px solid transparent;cursor:pointer;box-shadow:inset 0 0 0 1px rgba(255,255,255,.35)}
@@ -231,7 +238,7 @@ body{background:
     <button type="button" id="fly" class="glass big">우주선으로 날아가기</button>
   </div>
 </section>
-<div id="mk" role="dialog" aria-modal="true" aria-label="내 별 만들기"><div class="rbox"><b id="mk-t">내 별 만들기</b><p id="mk-p"></p><input id="mk-n" maxlength="12" placeholder="별 이름 (최대 12자)" aria-label="별 이름"><div id="mk-c" class="mkc"></div><button type="button" id="mk-ok" class="glass">별 만들기</button><button type="button" id="mk-x" class="glass">나중에</button></div></div>
+<div id="mk" role="dialog" aria-modal="true" aria-label="내 별 만들기"><div class="rbox"><b id="mk-t">내 별 만들기</b><p id="mk-p"></p><input id="mk-n" maxlength="12" placeholder="별 이름 (최대 12자)" aria-label="별 이름"><div class="mkr"><button type="button" id="mk-real-btn" class="glass">별 이름 가져오기</button><small id="mk-real"></small></div><div id="mk-c" class="mkc"></div><div id="mk-h" class="mkh"></div><button type="button" id="mk-ok" class="glass">별 만들기</button><button type="button" id="mk-x" class="glass">나중에</button></div></div>
 <div id="st" aria-hidden="true"><span><b></b><em>⋯</em></span></div>
 <div id="rep" role="dialog" aria-modal="true" aria-label="신고와 차단"><div class="rbox"><b id="rep-t"></b><div id="rep-a" class="ra"></div><button type="button" id="rep-x" class="glass">닫기</button></div></div>
 <div id="plname"><b></b><small></small></div>
@@ -475,8 +482,7 @@ function drawMe(cx,cy,R,tilt,inc,rot,a,t,ms){
   var g=ctx.createRadialGradient(sx,sy,0,sx,sy,30*u);
   g.addColorStop(0,'rgba('+col+','+tw+')'); g.addColorStop(.25,'rgba('+col+','+(.45*tw)+')'); g.addColorStop(1,'rgba('+col+',0)');
   ctx.fillStyle=g; ctx.fillRect(sx-30*u,sy-30*u,60*u,60*u);
-  sparkle(sx,sy,30*u*(.92+.12*tw),0,col,tw);
-  sparkle(sx,sy,17*u,.7854,col,.75*tw);
+  shapeDraw(sx,sy,30*u*(.92+.12*tw),col,tw,ME.sp|0);
   ctx.fillStyle='rgba(255,255,255,'+tw+')'; ctx.beginPath(); ctx.arc(sx,sy,3*u,0,6.2832); ctx.fill();
   /* 위치를 알리듯 천천히 퍼지는 동그라미 */
   for(var j=0;j<2;j++){
@@ -909,7 +915,7 @@ function buildPanel(){
 }
 
 /* ===== 내 별 만들기 · 모두의 홈에 보이는 별 ===== */
-var STARS=[], STP=[], starsT=0, askedStar=false, meShow=0, meNm='', mkSel=0, starHover=-1;
+var STARS=[], STP=[], starsT=0, askedStar=false, meShow=0, meNm='', mkSel=0, mkShape=0, lastReal=-1, starHover=-1;
 try{var sc0=JSON.parse(localStorage.getItem('lhy.stars')||'null'); if(sc0&&sc0.a){STARS=sc0.a; starsT=sc0.t||0}}catch(e){}
 function loadStars(force){
   if(!force&&STARS.length&&Date.now()-starsT<300000)return;
@@ -921,13 +927,13 @@ function loadStars(force){
 function loadMyStar(){
   if(!FB.user)return;
   FB.F.getDoc(FB.F.doc(FB.db,'stars',FB.user.uid)).then(function(s){
-    if(s.exists()){var d=s.data(); ME.sm=1; ME.sn=d.n; if(typeof d.c==='number')ME.c=d.c; if(typeof d.s==='number')ME.s=d.s; try{localStorage.setItem('lhy.me',JSON.stringify(ME))}catch(e){}}
+    if(s.exists()){var d=s.data(); ME.sm=1; ME.sn=d.n; if(typeof d.c==='number')ME.c=d.c; if(typeof d.s==='number')ME.s=d.s; ME.sp=d.h|0; try{localStorage.setItem('lhy.me',JSON.stringify(ME))}catch(e){}}
     else{ME.sm=0; if(!askedStar){askedStar=true; setTimeout(function(){if(FB.user)openStar()},1400)}}
   }).catch(function(){});
 }
 function starSync(){
   if(!FB.user||!FB.db||!ME.sm)return Promise.resolve();
-  return FB.F.setDoc(FB.F.doc(FB.db,'stars',FB.user.uid),{n:(ME.sn||'').slice(0,12),c:ME.c|0,s:ME.s,t:Date.now()});
+  return FB.F.setDoc(FB.F.doc(FB.db,'stars',FB.user.uid),{n:(ME.sn||'').slice(0,12),c:ME.c|0,s:ME.s,h:ME.sp|0,t:Date.now()});
 }
 function openStar(){
   if(!FB.user){toast('로그인하면 내 별을 만들 수 있어요.');return}
@@ -936,19 +942,48 @@ function openStar(){
   document.getElementById('mk-p').textContent=edit?'이름과 색을 바꿀 수 있어요. 모두의 홈에 보여요.':'모두의 홈 은하에 내 별이 떠요. 이름을 지어 주세요. 이름은 모두에게 보여요.';
   document.getElementById('mk-ok').textContent=edit?'저장':'별 만들기';
   document.getElementById('mk-x').textContent=edit?'닫기':'나중에';
-  var inp=document.getElementById('mk-n'); inp.value=edit?(ME.sn||''):(((ME.pl&&ME.pl.o)||(FB.user.displayName||'').split(' ')[0]||'')+'의 별').slice(0,12);
-  [].forEach.call(document.querySelectorAll('#mk-c button'),function(b,i){b.classList.toggle('on',i===mkSel)});
+  var inp=document.getElementById('mk-n'); inp.value=edit?(ME.sn||''):''; mkShape=ME.sp|0; document.getElementById('mk-real').textContent='';
+  [].forEach.call(document.querySelectorAll('#mk-c button'),function(b,i){b.classList.toggle('on',i===mkSel)}); [].forEach.call(document.querySelectorAll('#mk-h button'),function(b,i){b.classList.toggle('on',i===mkShape)});
   mk.classList.add('on'); setTimeout(function(){inp.focus();inp.select()},50);
+}
+var REALSTARS=[['시리우스','큰개자리, 밤하늘에서 가장 밝은 별'],['카노푸스','용골자리, 두 번째로 밝은 별'],['아르크투루스','목동자리의 주황빛 거성'],['베가','거문고자리, 직녀성'],['카펠라','마차부자리의 노란빛 별'],['리겔','오리온자리의 푸른 별'],['프로키온','작은개자리의 으뜸별'],['베텔게우스','오리온자리의 붉은 초거성'],['알타이르','독수리자리, 견우성'],['알데바란','황소자리의 붉은 눈'],['안타레스','전갈자리의 붉은 심장'],['스피카','처녀자리의 푸른 별'],['폴룩스','쌍둥이자리의 으뜸별'],['카스토르','쌍둥이자리의 또 다른 별'],['포말하우트','남쪽물고기자리의 외로운 별'],['데네브','백조자리의 꼬리별'],['레굴루스','사자자리의 심장'],['북극성','작은곰자리, 방향을 알려 주는 별'],['아크룩스','남십자자리의 별'],['미자르','북두칠성 손잡이 끝의 별'],['알코르','미자르 곁의 작은 별'],['알골','페르세우스자리, 깜빡이는 악마별'],['미라','고래자리, 밝기가 변하는 별'],['알비레오','백조자리의 이중성'],['프록시마','태양에서 가장 가까운 다른 별'],['바너드별','뱀주인자리, 빠르게 움직이는 별'],['태양','우리에게 가장 가까운 별'],['카우스','궁수자리의 별'],['알페라츠','안드로메다자리의 머리별'],['미르팍','페르세우스자리의 별']];
+function sparkleN(x,y,r,rot,col,al,n){
+  ctx.save(); ctx.translate(x,y); ctx.rotate(rot);
+  var g=ctx.createRadialGradient(0,0,0,0,0,r); g.addColorStop(0,'rgba(255,255,255,'+al+')'); g.addColorStop(.3,'rgba('+col+','+(.9*al)+')'); g.addColorStop(1,'rgba('+col+',0)');
+  ctx.fillStyle=g; ctx.beginPath(); ctx.moveTo(r,0); var stp=6.2832/n;
+  for(var i=0;i<n;i++){var a1=(i+1)*stp, am=a1-stp/2; ctx.quadraticCurveTo(Math.cos(am)*r*.1,Math.sin(am)*r*.1,Math.cos(a1)*r,Math.sin(a1)*r)}
+  ctx.closePath(); ctx.fill(); ctx.restore();
+}
+function polyStar(x,y,r,col,al,n,inner){
+  ctx.save(); ctx.translate(x,y);
+  var g=ctx.createRadialGradient(0,0,0,0,0,r); g.addColorStop(0,'rgba(255,255,255,'+al+')'); g.addColorStop(.4,'rgba('+col+','+(.95*al)+')'); g.addColorStop(1,'rgba('+col+','+(.25*al)+')');
+  ctx.fillStyle=g; ctx.beginPath();
+  for(var i=0;i<n*2;i++){var a=-1.5708+i*Math.PI/n, rr=i%2?r*inner:r; ctx.lineTo(Math.cos(a)*rr,Math.sin(a)*rr)}
+  ctx.closePath(); ctx.fill(); ctx.restore();
+}
+/* 별 모양: 0 반짝 · 1 오각별 · 2 육방별 · 3 둥근 별 · 4 다이아 */
+function shapeDraw(x,y,r,col,al,h){
+  if(h===1){polyStar(x,y,r*.95,col,al,5,.45)}
+  else if(h===2){sparkleN(x,y,r,.5236,col,al,6)}
+  else if(h===3){var g=ctx.createRadialGradient(x,y,0,x,y,r*.85); g.addColorStop(0,'rgba(255,255,255,'+al+')'); g.addColorStop(.35,'rgba('+col+','+(.95*al)+')'); g.addColorStop(1,'rgba('+col+',0)'); ctx.fillStyle=g; ctx.beginPath(); ctx.arc(x,y,r*.85,0,6.2832); ctx.fill()}
+  else if(h===4){polyStar(x,y,r,col,al,2,.42)}
+  else{sparkleN(x,y,r,0,col,al,4); sparkleN(x,y,r*.55,.7854,col,.75*al,4)}
 }
 function closeStar(){document.getElementById('mk').classList.remove('on')}
 function buildMk(){
   var box=document.getElementById('mk-c');
   MEC.forEach(function(c,i){var b=document.createElement('button'); b.type='button'; b.setAttribute('aria-label','별 색 '+(i+1)); b.style.background='rgb('+c+')'; b.addEventListener('click',function(){mkSel=i; [].forEach.call(box.children,function(x,j){x.classList.toggle('on',j===i)})}); box.appendChild(b)});
+  var hb_=document.getElementById('mk-h');
+  ['✦','★','✶','●','◆'].forEach(function(g,i){var b=document.createElement('button'); b.type='button'; b.textContent=g; b.setAttribute('aria-label','별 모양 '+(i+1)); b.addEventListener('click',function(){mkShape=i; [].forEach.call(hb_.children,function(x,j){x.classList.toggle('on',j===i)})}); hb_.appendChild(b)});
+  document.getElementById('mk-real-btn').addEventListener('click',function(){
+    var i; do{i=Math.floor(rnd()*REALSTARS.length)}while(i===lastReal&&REALSTARS.length>1); lastReal=i;
+    document.getElementById('mk-n').value=REALSTARS[i][0]; document.getElementById('mk-real').textContent=REALSTARS[i][0]+' · '+REALSTARS[i][1];
+  });
   document.getElementById('mk-x').addEventListener('click',closeStar);
   document.getElementById('mk-ok').addEventListener('click',function(){
     var n=document.getElementById('mk-n').value.trim().slice(0,12);
     if(!n){toast('별 이름을 입력해 주세요.');return}
-    var first=!ME.sm; ME.sn=n; ME.c=mkSel; ME.sm=1; saveMe(); closeStar();
+    var first=!ME.sm; ME.sn=n; ME.c=mkSel; ME.sp=mkShape; ME.sm=1; saveMe(); closeStar();
     starSync().then(function(){toast(first?'내 별이 은하에 떴어요. 모두의 홈에서 보여요.':'내 별을 저장했어요.'); meShow=t+10; loadStars(true)}).catch(function(){toast('저장하지 못했어요. 잠시 뒤에 다시 시도해 주세요.')});
   });
   document.getElementById('mk-n').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('mk-ok').click()});
@@ -964,7 +999,7 @@ function drawStars(cx,cy,R,tilt,inc,rot,a,t){
     var o=starOff(x.s||0,R,tilt,inc,rot), sx=cx+o[0], sy=cy+o[1], col=MEC[(x.c|0)%5], tw=.7+.3*Math.sin(t*1.6+i*1.7);
     var g=ctx.createRadialGradient(sx,sy,0,sx,sy,13*d); g.addColorStop(0,'rgba('+col+','+(.9*tw)+')'); g.addColorStop(.3,'rgba('+col+','+(.3*tw)+')'); g.addColorStop(1,'rgba('+col+',0)');
     ctx.fillStyle=g; ctx.fillRect(sx-13*d,sy-13*d,26*d,26*d);
-    sparkle(sx,sy,9*d*(.9+.15*tw),0,col,tw);
+    shapeDraw(sx,sy,9*d*(.9+.15*tw),col,tw,x.h|0);
     ctx.fillStyle='rgba(255,255,255,'+tw+')'; ctx.fillRect(sx-1.2*d,sy-1.2*d,2.4*d,2.4*d);
     STP.push([sx/d,sy/d,i]);
     var dd=(px-sx/d)*(px-sx/d)+(py-sy/d)*(py-sy/d); if(dd<best){best=dd; hover=STP.length-1}
