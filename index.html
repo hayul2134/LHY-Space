@@ -99,6 +99,8 @@ body{background:
 #labels.on .label:nth-child(4){transition-delay:.36s}
 .label:hover{background:linear-gradient(145deg,rgba(255,255,255,.26),rgba(255,255,255,.1))}
 
+#tag{transition:opacity .6s ease}
+#tag.off{opacity:0!important;pointer-events:none}
 #sub{position:fixed;left:0;right:0;top:calc(7vh + env(safe-area-inset-top));text-align:center;pointer-events:none;opacity:0;transition:opacity 1.2s ease .5s}
 #sub.on{opacity:1}
 #sub b{display:block;font:600 12px/1 var(--display);letter-spacing:.42em;text-indent:.42em;color:rgba(222,238,255,.92);text-shadow:0 0 14px rgba(111,179,255,.7)}
@@ -985,8 +987,8 @@ function layout(){
 var px3=0,py3=0,tx3=0,ty3=0,qual=1,fAcc=0,fN=0,prog=0,target=0,lastE=0,t=0,last=performance.now(),introT=0,hoverMain=0;
 var welcome=document.getElementById('welcome'),sub=document.getElementById('sub'),bar=document.getElementById('bar'),toastEl=document.getElementById('toast');
 
-function enter(){ if(target===1)return; target=1; welcome.classList.add('hide'); sub.classList.add('on'); bar.classList.add('on'); cv.tabIndex=-1; cv.classList.remove('go') }
-function leave(){ if(target===0)return; target=0; labelsEl.classList.remove('on'); sub.classList.remove('on'); bar.classList.remove('on'); welcome.classList.remove('hide'); cv.tabIndex=0 }
+function enter(){ if(target===1)return; target=1; welcome.classList.add('hide'); sub.classList.add('on'); bar.classList.add('on'); document.getElementById('tag').classList.add('off'); cv.tabIndex=-1; cv.classList.remove('go') }
+function leave(){ if(target===0)return; target=0; labelsEl.classList.remove('on'); sub.classList.remove('on'); bar.classList.remove('on'); document.getElementById('tag').classList.remove('off'); welcome.classList.remove('hide'); cv.tabIndex=0 }
 var tt; function toast(m){toastEl.textContent=m;toastEl.classList.add('on');clearTimeout(tt);tt=setTimeout(function(){toastEl.classList.remove('on')},2200)}
 
 function frame(now){
