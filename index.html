@@ -146,10 +146,19 @@ body{background:
 #plp .li button.ghost{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2)}
 #plp .vrow{display:flex;gap:8px;margin:6px 0 2px}
 #plp .tab{font-size:12.5px}
-#rep{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,8,30,.5);z-index:20}
-#rep.on{display:flex}
-#rep .rbox{width:min(320px,calc(100vw - 40px));padding:20px;border-radius:24px;border:1px solid var(--line);background:linear-gradient(145deg,rgba(255,255,255,.18),rgba(255,255,255,.07));backdrop-filter:blur(26px);-webkit-backdrop-filter:blur(26px);display:flex;flex-direction:column;gap:12px;box-shadow:0 24px 50px rgba(2,8,30,.55)}
-#rep .rbox>b{font:700 15px var(--body);text-align:center}
+#rep,#mk{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,8,30,.5);z-index:20}
+#rep.on,#mk.on{display:flex}
+#rep .rbox,#mk .rbox{width:min(320px,calc(100vw - 40px));padding:20px;border-radius:24px;border:1px solid var(--line);background:linear-gradient(145deg,rgba(255,255,255,.18),rgba(255,255,255,.07));backdrop-filter:blur(26px);-webkit-backdrop-filter:blur(26px);display:flex;flex-direction:column;gap:12px;box-shadow:0 24px 50px rgba(2,8,30,.55)}
+#rep .rbox>b,#mk .rbox>b{font:700 15px var(--body);text-align:center}
+#mk p{font:400 12.5px/1.6 var(--body);color:var(--muted);text-align:center;margin:0}
+#mk input{width:100%;padding:11px 13px;border-radius:14px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.08);color:var(--ice);font:500 15px var(--body);outline:none;text-align:center}
+#mk input:focus{border-color:rgba(160,205,255,.85)}
+#mk .mkc{display:flex;gap:10px;justify-content:center}
+#mk .mkc button{width:30px;height:30px;border-radius:50%;border:2px solid transparent;cursor:pointer;box-shadow:inset 0 0 0 1px rgba(255,255,255,.35)}
+#mk .mkc button.on{border-color:#fff;box-shadow:0 0 0 3px rgba(111,179,255,.6)}
+#st{position:fixed;left:0;top:0;pointer-events:none;opacity:0;transition:opacity .25s ease;will-change:transform}
+#st span{display:flex;align-items:center;gap:8px;padding:5px 11px;border-radius:999px;border:1px solid rgba(255,255,255,.22);background:linear-gradient(145deg,rgba(255,255,255,.16),rgba(255,255,255,.05));backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font:500 11.5px/1 var(--body);color:var(--ice);white-space:nowrap}
+#st em{font-style:normal;opacity:.55}
 #rep .ra{display:flex;flex-direction:column;gap:8px}
 #rep .ra button{padding:11px 0;border-radius:14px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.1);color:var(--ice);font:500 14px var(--body);cursor:pointer}
 #plp .big{width:100%;margin-top:16px;padding:13px 0;font-size:14px}
@@ -186,9 +195,9 @@ body{background:
     <circle cx="6" cy="3" r="2.4"/><circle cx="14" cy="20" r="3.6"/><circle cx="8" cy="48" r="3.6"/><circle cx="1" cy="41" r="2.4"/><circle cx="16" cy="76" r="3.6"/><circle cx="10" cy="97" r="2.4"/></svg>
   <p><span>YOUR</span><span>OWN</span><span>SPACE</span></p>
 </aside>
-<div id="umenu"><span id="uemail"></span><button type="button" id="logout">로그아웃</button></div>
+<div id="umenu"><span id="uemail"></span><button type="button" id="umk">내 별 꾸미기</button><button type="button" id="logout">로그아웃</button></div>
 <div id="labels"></div>
-<div id="me"><span><i></i><b>내 별</b><button type="button" id="mec">색 바꾸기</button></span></div>
+<div id="me"><span><i></i><b>내 별</b><button type="button" id="mec">꾸미기</button></span></div>
 <div id="sub" aria-hidden="true"><b>ONE GALAXY · YOUR OWN SPACE</b><small>하나의 우주, 나만의 공간</small></div>
 <section id="plp" aria-label="내 행성과 우주선 꾸미기">
   <div class="tabs"><button type="button" class="tab on" data-t="pl">행성</button><button type="button" class="tab" data-t="sh">우주선</button><button type="button" class="tab" data-t="ex">탐험</button><button type="button" class="tab" data-t="fr">친구</button></div>
@@ -222,6 +231,8 @@ body{background:
     <button type="button" id="fly" class="glass big">우주선으로 날아가기</button>
   </div>
 </section>
+<div id="mk" role="dialog" aria-modal="true" aria-label="내 별 만들기"><div class="rbox"><b id="mk-t">내 별 만들기</b><p id="mk-p"></p><input id="mk-n" maxlength="12" placeholder="별 이름 (최대 12자)" aria-label="별 이름"><div id="mk-c" class="mkc"></div><button type="button" id="mk-ok" class="glass">별 만들기</button><button type="button" id="mk-x" class="glass">나중에</button></div></div>
+<div id="st" aria-hidden="true"><span><b></b><em>⋯</em></span></div>
 <div id="rep" role="dialog" aria-modal="true" aria-label="신고와 차단"><div class="rbox"><b id="rep-t"></b><div id="rep-a" class="ra"></div><button type="button" id="rep-x" class="glass">닫기</button></div></div>
 <div id="plname"><b></b><small></small></div>
 <div id="plhint">공개된 행성과 친구의 행성을 우주선으로 방문해 보세요</div>
@@ -434,12 +445,13 @@ var BG=[]; for(var q0=0;q0<4200;q0++)BG.push({a:rnd()*6.2832,d:.03+Math.sqrt(rnd
 var MEC=['143,211,255','182,245,230','255,214,168','224,184,255','255,183,197'], meX=-999, meY=-999, meOn=false, meHot=false, meOver=false;
 var meEl=null;
 function nearMe(px,py){return meOn&&Math.hypot(px-meX,py-meY)<30}
-function meOff(R,tilt,inc,rot){
-  var ang=ME.s*6.2832, x=Math.cos(ang)*.5, y=Math.sin(ang)*.5,
+function starOff(s,R,tilt,inc,rot){
+  var ang=s*6.2832, rr=.3+((s*997.7)%1)*.55, x=Math.cos(ang)*rr, y=Math.sin(ang)*rr,
       cr=Math.cos(rot),sr=Math.sin(rot),ci=Math.cos(inc),si=Math.sin(inc),
       rx=x*cr-y*sr, ry=(x*sr+y*cr)*tilt;
   return [R*(rx*ci-ry*si), R*(rx*si+ry*ci)];
 }
+function meOff(R,tilt,inc,rot){return starOff(ME.s,R,tilt,inc,rot)}
 /* 오목한 4방 별 모양 (십자가처럼 가늘지 않고 몸통이 있는 반짝임) */
 function sparkle(x,y,r,rot,col,al){
   ctx.save(); ctx.translate(x,y); ctx.rotate(rot);
@@ -452,7 +464,7 @@ function sparkle(x,y,r,rot,col,al){
 function drawMe(cx,cy,R,tilt,inc,rot,a,t,ms){
   if(!meEl)meEl=document.getElementById('me');
   var k=sm(.5,.95,introT)*a;
-  if(k<.02){meOn=false;meEl.style.opacity=0;meEl.classList.remove('hot');return}
+  if(k<.02||!ME.sm||!FB.user){meOn=false;meEl.style.opacity=0;meEl.classList.remove('hot');return}
   var o=meOff(R,tilt,inc,rot), sx=cx+o[0], sy=cy+o[1], col=MEC[ME.c%5], tw=.82+.18*Math.sin(t*2.4), d=dpr, u=d*ms;
   meX=sx/d; meY=sy/d; meOn=true;
   ctx.save(); ctx.globalAlpha=Math.min(1,k);
@@ -475,7 +487,8 @@ function drawMe(cx,cy,R,tilt,inc,rot,a,t,ms){
   meHot=Math.hypot((tx3+.5)*innerWidth-meX,(ty3+.5)*innerHeight-meY)<30;
   var idle=prog<.02, hot=(meHot||meOver)&&idle;
   meEl.style.transform='translate('+(meX+16)+'px,'+(meY-30)+'px)';
-  meEl.style.opacity=(idle&&(t<(ME_NEW?20:8)||meHot||meOver))?Math.min(1,k):0;
+  var nmx=ME.sn||'내 별'; if(meNm!==nmx){meNm=nmx; meEl.querySelector('b').textContent=nmx}
+  meEl.style.opacity=(idle&&(t<(ME_NEW?20:8)||t<meShow||meHot||meOver))?Math.min(1,k):0;
   meEl.classList.toggle('hot',hot);
   meEl.querySelector('i').style.background='rgb('+col+')';
 }
@@ -534,7 +547,7 @@ function cloudPull(){
       try{localStorage.setItem('lhy.me',JSON.stringify(ME))}catch(e){}
       paintTag(false); if(plPanel)refreshPanel();
     }
-    cloudPush(true);
+    cloudPush(true); loadMyStar();
   }).catch(function(){toast('계정에서 불러오지 못했어요. 이 기기의 설정으로 계속해요.')});
 }
 function cloudPush(now){
@@ -659,6 +672,7 @@ function pollLive(uid){
   }).catch(function(){});
 }
 function presenceTick(){
+  loadStars(false);
   if(VIEW.on){hb(); pollLive(VIEW.uid)}
   else if(plTarget===1&&FB.user&&ME.pl.v!=='me')pollLive(FB.user.uid);
   else LIVEL=[];
@@ -894,6 +908,75 @@ function buildPanel(){
   document.getElementById('fly').addEventListener('click',function(){ if(!fl.on){fl.on=true;fl.t=0;trail.length=0} });
 }
 
+/* ===== 내 별 만들기 · 모두의 홈에 보이는 별 ===== */
+var STARS=[], STP=[], starsT=0, askedStar=false, meShow=0, meNm='', mkSel=0, starHover=-1;
+try{var sc0=JSON.parse(localStorage.getItem('lhy.stars')||'null'); if(sc0&&sc0.a){STARS=sc0.a; starsT=sc0.t||0}}catch(e){}
+function loadStars(force){
+  if(!force&&STARS.length&&Date.now()-starsT<300000)return;
+  fbLoad().then(function(){return FB.F.getDocs(FB.F.query(FB.F.collection(FB.db,'stars'),FB.F.limit(60)))}).then(function(s){
+    var a=[]; s.forEach(function(d){var x=d.data(); x.id=d.id; a.push(x)}); STARS=a; starsT=Date.now();
+    try{localStorage.setItem('lhy.stars',JSON.stringify({t:starsT,a:a}))}catch(e){}
+  }).catch(function(){});
+}
+function loadMyStar(){
+  if(!FB.user)return;
+  FB.F.getDoc(FB.F.doc(FB.db,'stars',FB.user.uid)).then(function(s){
+    if(s.exists()){var d=s.data(); ME.sm=1; ME.sn=d.n; if(typeof d.c==='number')ME.c=d.c; if(typeof d.s==='number')ME.s=d.s; try{localStorage.setItem('lhy.me',JSON.stringify(ME))}catch(e){}}
+    else{ME.sm=0; if(!askedStar){askedStar=true; setTimeout(function(){if(FB.user)openStar()},1400)}}
+  }).catch(function(){});
+}
+function starSync(){
+  if(!FB.user||!FB.db||!ME.sm)return Promise.resolve();
+  return FB.F.setDoc(FB.F.doc(FB.db,'stars',FB.user.uid),{n:(ME.sn||'').slice(0,12),c:ME.c|0,s:ME.s,t:Date.now()});
+}
+function openStar(){
+  if(!FB.user){toast('로그인하면 내 별을 만들 수 있어요.');return}
+  var mk=document.getElementById('mk'), edit=!!ME.sm; mkSel=ME.c|0;
+  document.getElementById('mk-t').textContent=edit?'내 별 꾸미기':'내 별 만들기';
+  document.getElementById('mk-p').textContent=edit?'이름과 색을 바꿀 수 있어요. 모두의 홈에 보여요.':'모두의 홈 은하에 내 별이 떠요. 이름을 지어 주세요. 이름은 모두에게 보여요.';
+  document.getElementById('mk-ok').textContent=edit?'저장':'별 만들기';
+  document.getElementById('mk-x').textContent=edit?'닫기':'나중에';
+  var inp=document.getElementById('mk-n'); inp.value=edit?(ME.sn||''):(((ME.pl&&ME.pl.o)||(FB.user.displayName||'').split(' ')[0]||'')+'의 별').slice(0,12);
+  [].forEach.call(document.querySelectorAll('#mk-c button'),function(b,i){b.classList.toggle('on',i===mkSel)});
+  mk.classList.add('on'); setTimeout(function(){inp.focus();inp.select()},50);
+}
+function closeStar(){document.getElementById('mk').classList.remove('on')}
+function buildMk(){
+  var box=document.getElementById('mk-c');
+  MEC.forEach(function(c,i){var b=document.createElement('button'); b.type='button'; b.setAttribute('aria-label','별 색 '+(i+1)); b.style.background='rgb('+c+')'; b.addEventListener('click',function(){mkSel=i; [].forEach.call(box.children,function(x,j){x.classList.toggle('on',j===i)})}); box.appendChild(b)});
+  document.getElementById('mk-x').addEventListener('click',closeStar);
+  document.getElementById('mk-ok').addEventListener('click',function(){
+    var n=document.getElementById('mk-n').value.trim().slice(0,12);
+    if(!n){toast('별 이름을 입력해 주세요.');return}
+    var first=!ME.sm; ME.sn=n; ME.c=mkSel; ME.sm=1; saveMe(); closeStar();
+    starSync().then(function(){toast(first?'내 별이 은하에 떴어요. 모두의 홈에서 보여요.':'내 별을 저장했어요.'); meShow=t+10; loadStars(true)}).catch(function(){toast('저장하지 못했어요. 잠시 뒤에 다시 시도해 주세요.')});
+  });
+  document.getElementById('mk-n').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('mk-ok').click()});
+}
+function drawStars(cx,cy,R,tilt,inc,rot,a,t){
+  STP.length=0;
+  var st=document.getElementById('st'), k=sm(.5,.95,introT)*a;
+  if(k<.02||!STARS.length){if(st)st.style.opacity=0; starHover=-1; return}
+  var uid=FB.user&&FB.user.uid, d=dpr, hover=-1, best=24*24, px=(tx3+.5)*innerWidth, py=(ty3+.5)*innerHeight;
+  ctx.save(); ctx.globalCompositeOperation='lighter'; ctx.globalAlpha=Math.min(1,k);
+  for(var i=0;i<STARS.length;i++){
+    var x=STARS[i]; if(x.id===uid||isBlocked(x.id))continue;
+    var o=starOff(x.s||0,R,tilt,inc,rot), sx=cx+o[0], sy=cy+o[1], col=MEC[(x.c|0)%5], tw=.7+.3*Math.sin(t*1.6+i*1.7);
+    var g=ctx.createRadialGradient(sx,sy,0,sx,sy,13*d); g.addColorStop(0,'rgba('+col+','+(.9*tw)+')'); g.addColorStop(.3,'rgba('+col+','+(.3*tw)+')'); g.addColorStop(1,'rgba('+col+',0)');
+    ctx.fillStyle=g; ctx.fillRect(sx-13*d,sy-13*d,26*d,26*d);
+    sparkle(sx,sy,9*d*(.9+.15*tw),0,col,tw);
+    ctx.fillStyle='rgba(255,255,255,'+tw+')'; ctx.fillRect(sx-1.2*d,sy-1.2*d,2.4*d,2.4*d);
+    STP.push([sx/d,sy/d,i]);
+    var dd=(px-sx/d)*(px-sx/d)+(py-sy/d)*(py-sy/d); if(dd<best){best=dd; hover=STP.length-1}
+  }
+  ctx.restore();
+  if(st){
+    if(hover>-1&&k>.5){var p=STP[hover], sx_=STARS[p[2]]; st.querySelector('b').textContent=sx_.n||'이름 없는 별'; st.style.transform='translate('+(p[0]+12)+'px,'+(p[1]-30)+'px)'; st.style.opacity=1; starHover=p[2]}
+    else{st.style.opacity=0; starHover=-1}
+  }
+}
+function starAt(px,py){for(var i=0;i<STP.length;i++){if(Math.hypot(px-STP[i][0],py-STP[i][1])<22)return STP[i][2]}return -1}
+
 /* 별 속으로 들어갈 때 터지는 빛 */
 function bloom(cx,cy,R,e,col){
   var b=sm(.3,.72,e)*(1-sm(.8,1,e)); if(b<.01)return;
@@ -1031,6 +1114,7 @@ function frame(now){
     var gx=cx, gy=cy;
     drawGal(main,gx,gy,mR,mT,mI,mRot,a1*(1+.18*hoverMain),1+Math.min(zoom-1,3)*.3,t,1-sm(.1,.55,e));
     drawMe(gx,gy,mR,mT,mI,mRot,sm(0,.4,introT)*(1-sm(.05,.3,e)),t,1);
+    drawStars(gx,gy,mR,mT,mI,mRot,sm(0,.4,introT)*(1-sm(.05,.3,e)),t);
   }
 
   /* 서비스 은하들 */
@@ -1066,7 +1150,7 @@ cv.addEventListener('pointermove',function(e){
 });
 cv.addEventListener('pointerleave',function(){if(prog===1)hot=-1;cv.classList.remove('go')});
 cv.addEventListener('click',function(e){
-  if(target===0){ if(prog===0&&introT>.7&&(nearMe(e.clientX,e.clientY)||hitMain(e.clientX,e.clientY)))enter() }
+  if(target===0){ var sa=(prog===0&&introT>.7)?starAt(e.clientX,e.clientY):-1; if(sa>-1)openActs({uid:STARS[sa].id,name:STARS[sa].n,tp:'star',label:(STARS[sa].n||'이름 없는 별')+' · 별'}); else if(prog===0&&introT>.7&&(nearMe(e.clientX,e.clientY)||hitMain(e.clientX,e.clientY)))enter() }
   else if(prog===1&&plTarget===0){var h=hitMini(e.clientX,e.clientY); if(h>-1)explore(h); else if(nearPl(e.clientX,e.clientY))openPlanet()}
   else if(prog===1&&plTarget===1&&!VIEW.on){var ni=nbAt(e.clientX,e.clientY); if(ni>-1)visitPlanet(NB[ni])}
 });
@@ -1082,14 +1166,16 @@ init(); layout(); paintTag(false);
   lb.addEventListener('pointerenter',function(){fbLoad().catch(function(){})}); lb.addEventListener('touchstart',function(){fbLoad().catch(function(){})},{passive:true});
   lb.addEventListener('click',function(e){e.stopPropagation(); if(FB.user)um.classList.toggle('on'); else doLogin()});
   document.getElementById('logout').addEventListener('click',doLogout);
+  document.getElementById('umk').addEventListener('click',function(){um.classList.remove('on'); openStar()});
+  buildMk();
   document.getElementById('plogin').addEventListener('click',doLogin);
   document.addEventListener('click',function(e){if(!um.contains(e.target))um.classList.remove('on')});
   try{if(localStorage.getItem('lhy.auth')==='1')fbLoad().catch(function(){})}catch(e){}
-  setTimeout(function(){fbLoad().catch(function(){})},7000);
+  setTimeout(function(){fbLoad().then(function(){loadStars(true)}).catch(function(){})},7000);
   setInterval(presenceTick,20000);
   addEventListener('beforeunload',leaveLive);
 })();
-document.getElementById('mec').addEventListener('click',function(e){e.stopPropagation();ME.c=(ME.c+1)%5;saveMe()});
+document.getElementById('mec').addEventListener('click',function(e){e.stopPropagation();openStar()});
 (function(){var m=document.getElementById('me');m.addEventListener('mouseenter',function(){meOver=true});m.addEventListener('mouseleave',function(){meOver=false})})();
 if(!ME_NEW)welcome.textContent='다시 오신 걸 환영합니다.';
 requestAnimationFrame(function(n){last=n;frame(n)});
