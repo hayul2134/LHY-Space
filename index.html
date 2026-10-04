@@ -139,6 +139,16 @@ body{background:
 #plp .li small{display:block;margin-top:2px;font:400 11.5px var(--body);color:var(--muted)}
 #plp .li button{padding:6px 12px;border-radius:999px;border:1px solid rgba(160,205,255,.6);background:rgba(111,179,255,.25);color:var(--ice);font:500 12px var(--body);cursor:pointer;flex:none}
 #pane-pl input+.sub,#pane-pl .row+input{margin-top:6px}
+#plp .bx{display:flex;gap:6px;flex:none}
+#plp .li button.ghost{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2)}
+#plp .vrow{display:flex;gap:8px;margin:6px 0 2px}
+#plp .tab{font-size:12.5px}
+#rep{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,8,30,.5);z-index:20}
+#rep.on{display:flex}
+#rep .rbox{width:min(320px,calc(100vw - 40px));padding:20px;border-radius:24px;border:1px solid var(--line);background:linear-gradient(145deg,rgba(255,255,255,.18),rgba(255,255,255,.07));backdrop-filter:blur(26px);-webkit-backdrop-filter:blur(26px);display:flex;flex-direction:column;gap:12px;box-shadow:0 24px 50px rgba(2,8,30,.55)}
+#rep .rbox>b{font:700 15px var(--body);text-align:center}
+#rep .ra{display:flex;flex-direction:column;gap:8px}
+#rep .ra button{padding:11px 0;border-radius:14px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.1);color:var(--ice);font:500 14px var(--body);cursor:pointer}
 #plp .big{width:100%;margin-top:16px;padding:13px 0;font-size:14px}
 #plname{position:fixed;transform:translate(-50%,0);text-align:center;pointer-events:none;opacity:0;transition:opacity .6s ease .6s}
 #plname b{display:block;font:700 18px var(--body);text-shadow:0 0 14px rgba(111,179,255,.6)}
@@ -178,7 +188,7 @@ body{background:
 <div id="me"><span><i></i><b>내 별</b><button type="button" id="mec">색 바꾸기</button></span></div>
 <div id="sub" aria-hidden="true"><b>ONE GALAXY · YOUR OWN SPACE</b><small>하나의 우주, 나만의 공간</small></div>
 <section id="plp" aria-label="내 행성과 우주선 꾸미기">
-  <div class="tabs"><button type="button" class="tab on" data-t="pl">행성</button><button type="button" class="tab" data-t="sh">우주선</button><button type="button" class="tab" data-t="ex">탐험</button></div>
+  <div class="tabs"><button type="button" class="tab on" data-t="pl">행성</button><button type="button" class="tab" data-t="sh">우주선</button><button type="button" class="tab" data-t="ex">탐험</button><button type="button" class="tab" data-t="fr">친구</button></div>
   <div id="pane-pl">
     <input id="in-pl-n" maxlength="12" placeholder="행성 이름" aria-label="행성 이름">
     <div class="row"><span>색</span><div id="ctl-pl-p" class="opts"></div></div>
@@ -187,12 +197,15 @@ body{background:
     <div class="row"><span>공개</span><div id="ctl-pl-v" class="opts"></div></div>
     <input id="in-pl-o" maxlength="14" placeholder="공개 닉네임 (비우면 구글 이름)" aria-label="공개 닉네임">
     <p class="sub">다녀간 우주선</p><div id="pvlist" class="list"></div>
+    <p class="sub">차단한 사용자</p><div id="bllist" class="list"></div>
     <p class="note" id="plnote">지금은 이 기기에만 저장되고 나만 볼 수 있어요.</p>
     <button type="button" id="plogin" class="glass big">구글로 로그인해서 저장하기</button>
   </div>
   <div id="pane-ex" hidden><p class="note" id="exnote">공개된 행성을 불러오는 중이에요.</p><div id="exlist" class="list"></div></div>
+  <div id="pane-fr" hidden><p class="note">친구가 되면 "친구만" 공개한 행성에도 서로 놀러 갈 수 있어요.</p><p class="sub">받은 신청</p><div id="frqlist" class="list"></div><p class="sub">내 친구</p><div id="frlist" class="list"></div></div>
   <div id="pane-vi" hidden>
     <p class="vt" id="vi-title"></p>
+    <div class="vrow"><button type="button" id="vi-fr" class="sg">친구 신청</button><button type="button" id="vi-more" class="sg">신고·차단</button></div>
     <p class="sub">다녀간 우주선</p><div id="vilist" class="list"></div>
     <input id="in-vi-m" maxlength="40" placeholder="방명록 한마디 (선택, 40자)" aria-label="방명록">
     <button type="button" id="vimark" class="glass big">다녀가기</button>
@@ -206,8 +219,9 @@ body{background:
     <button type="button" id="fly" class="glass big">우주선으로 날아가기</button>
   </div>
 </section>
+<div id="rep" role="dialog" aria-modal="true" aria-label="신고와 차단"><div class="rbox"><b id="rep-t"></b><div id="rep-a" class="ra"></div><button type="button" id="rep-x" class="glass">닫기</button></div></div>
 <div id="plname"><b></b><small></small></div>
-<div id="plhint">친구 공개는 곧 열려요 · 지금은 모두 공개 행성만 방문할 수 있어요</div>
+<div id="plhint">공개된 행성과 친구의 행성을 우주선으로 방문해 보세요</div>
 <div id="toast" role="status"></div>
 
 <script>
@@ -479,7 +493,7 @@ function onUser(u){
   FB.user=u||null;
   try{if(u)localStorage.setItem('lhy.auth','1'); else localStorage.removeItem('lhy.auth')}catch(e){}
   paintLogin();
-  if(u)cloudPull();
+  if(u){cloudPull(); loadFriends()}
 }
 function paintLogin(){
   var b=document.getElementById('login'), u=FB.user; if(!b)return;
@@ -512,6 +526,7 @@ function cloudPull(){
       if(typeof d.c==='number')ME.c=d.c; if(typeof d.s==='number')ME.s=d.s;
       (d.sv||[]).forEach(function(n){if(ME.sv.indexOf(n)<0)ME.sv.push(n)});
       ME.v=Math.max(ME.v||0,d.v||0);
+      ME.bl=ME.bl||[]; (d.bl||[]).forEach(function(u){if(ME.bl.indexOf(u)<0)ME.bl.push(u)}); ME.bn=ME.bn||{}; if(d.bn){for(var k in d.bn)ME.bn[k]=d.bn[k]}
       try{localStorage.setItem('lhy.me',JSON.stringify(ME))}catch(e){}
       paintTag(false); if(plPanel)refreshPanel();
     }
@@ -520,7 +535,7 @@ function cloudPull(){
 }
 function cloudPush(now){
   if(!FB.user||!FB.db)return;
-  var go=function(){FB.push=null; FB.F.setDoc(FB.F.doc(FB.db,'users',FB.user.uid),{pl:ME.pl,sh:ME.sh,sv:ME.sv,v:ME.v,c:ME.c,s:ME.s,day:ME.day,u:Date.now()},{merge:true}).catch(function(){}); pubSync()};
+  var go=function(){FB.push=null; FB.F.setDoc(FB.F.doc(FB.db,'users',FB.user.uid),{pl:ME.pl,sh:ME.sh,sv:ME.sv,v:ME.v,c:ME.c,s:ME.s,day:ME.day,bl:ME.bl||[],bn:ME.bn||{},u:Date.now()},{merge:true}).catch(function(){}); pubSync()};
   if(now){go();return}
   clearTimeout(FB.push); FB.push=setTimeout(go,900);
 }
@@ -528,78 +543,189 @@ function cloudPush(now){
 /* ===== 공개 행성 · 방문 · 방명록 (3단계) ===== */
 var NB=[], NBT=0, NBP=[], VISL=[], VIEW={on:false,pl:null,uid:null,owner:''}, plScene=false;
 function nick(){return ME.pl.o||((FB.user&&FB.user.displayName)||'').split(' ')[0]||'여행자'}
+var FR=[], FRN={}, FRQ=[], LIVEL=[], lastFl='', repCtx=null;
+function isBlocked(uid){return (ME.bl||[]).indexOf(uid)>-1}
 function pubSync(){
   if(!FB.user||!FB.db)return;
   var pl=ME.pl, ref=FB.F.doc(FB.db,'planets',FB.user.uid);
-  if(pl.v==='all'){
-    FB.F.setDoc(ref,{n:(pl.n||'나의 행성').slice(0,12),p:pl.p,r:pl.r,m:pl.m,sh:{h:ME.sh.h,c:ME.sh.c,f:ME.sh.f,e:ME.sh.e,n:(ME.sh.n||'').slice(0,12)},o:nick().slice(0,20),vis:'all',t:Date.now()}).catch(function(){});
+  if(pl.v==='all'||pl.v==='fr'){
+    FB.F.setDoc(ref,{n:(pl.n||'나의 행성').slice(0,12),p:pl.p,r:pl.r,m:pl.m,sh:{h:ME.sh.h,c:ME.sh.c,f:ME.sh.f,e:ME.sh.e,n:(ME.sh.n||'').slice(0,12)},o:nick().slice(0,20),vis:pl.v,fl:pl.v==='fr'?FR.slice(0,100):[],t:Date.now()}).catch(function(){});
   }else{FB.F.deleteDoc(ref).catch(function(){})}
 }
 function loadNeighbors(){
   if(Date.now()-NBT<45000){renderEx();return Promise.resolve(NB)}
-  return fbLoad().then(function(){return FB.F.getDocs(FB.F.query(FB.F.collection(FB.db,'planets'),FB.F.where('vis','==','all'),FB.F.limit(24)))}).then(function(s){
-    NB=[]; s.forEach(function(d){if(!FB.user||d.id!==FB.user.uid){var x=d.data(); x.id=d.id; NB.push(x)}});
+  return fbLoad().then(function(){
+    var C=FB.F.collection(FB.db,'planets'), qs=[FB.F.getDocs(FB.F.query(C,FB.F.where('vis','==','all'),FB.F.limit(24)))];
+    if(FB.user)qs.push(FB.F.getDocs(FB.F.query(C,FB.F.where('fl','array-contains',FB.user.uid),FB.F.limit(24))));
+    return Promise.all(qs);
+  }).then(function(rs){
+    var seen={}; NB=[];
+    rs.forEach(function(s){s.forEach(function(d){
+      if((FB.user&&d.id===FB.user.uid)||seen[d.id]||isBlocked(d.id))return; seen[d.id]=1;
+      var x=d.data(); x.id=d.id; x.fr=FR.indexOf(d.id)>-1; NB.push(x);
+    })});
+    NB.sort(function(a,b){return (b.fr?1:0)-(a.fr?1:0)});
     NBT=Date.now(); renderEx(); return NB;
   }).catch(function(){renderEx(true)});
 }
 function loadVisits(uid){
-  return fbLoad().then(function(){return FB.F.getDocs(FB.F.query(FB.F.collection(FB.db,'planets',uid,'visits'),FB.F.orderBy('t','desc'),FB.F.limit(8)))}).then(function(s){var a=[]; s.forEach(function(d){var x=d.data(); x.id=d.id; a.push(x)}); return a}).catch(function(){return []});
+  return fbLoad().then(function(){return FB.F.getDocs(FB.F.query(FB.F.collection(FB.db,'planets',uid,'visits'),FB.F.orderBy('t','desc'),FB.F.limit(8)))}).then(function(s){var a=[]; s.forEach(function(d){var x=d.data(); x.id=d.id; if(!isBlocked(d.id))a.push(x)}); return a}).catch(function(){return []});
 }
-function li(txt,sub,btn,fn){
+function li(txt,sub,btns){
   var el=document.createElement('div'); el.className='li';
   var tx=document.createElement('div'); var b=document.createElement('b'); b.textContent=txt; tx.appendChild(b);
   if(sub){var sm_=document.createElement('small'); sm_.textContent=sub; tx.appendChild(sm_)}
   el.appendChild(tx);
-  if(btn){var bt=document.createElement('button'); bt.type='button'; bt.textContent=btn; bt.addEventListener('click',fn); el.appendChild(bt)}
+  if(btns&&btns.length){var bx=document.createElement('div'); bx.className='bx'; btns.forEach(function(bb){var bt=document.createElement('button'); bt.type='button'; bt.textContent=bb[0]; if(bb[2])bt.className=bb[2]; bt.addEventListener('click',bb[1]); bx.appendChild(bt)}); el.appendChild(bx)}
   return el;
 }
 function renderEx(err){
   var box=document.getElementById('exlist'), note=document.getElementById('exnote'); if(!box)return; box.textContent='';
   if(err){note.textContent='행성을 불러오지 못했어요. 잠시 뒤에 다시 열어 주세요.';return}
-  note.textContent=NB.length?'공개된 행성이에요. 우주선으로 찾아가 보세요. 배경의 흐린 행성을 눌러도 갈 수 있어요.':'아직 공개된 행성이 없어요. 내 행성의 공개를 "모두"로 바꾸면 여기에 나타나요.';
-  NB.forEach(function(x){box.appendChild(li(x.n||'이름 없는 행성','주인 '+(x.o||'여행자'),'방문',function(){visitPlanet(x)}))});
+  note.textContent=NB.length?'공개된 행성과 친구의 행성이에요. 배경의 흐린 행성을 눌러도 갈 수 있어요.':'아직 방문할 수 있는 행성이 없어요. 내 행성의 공개를 바꾸면 다른 사람 눈에도 보여요.';
+  NB.forEach(function(x){box.appendChild(li(x.n||'이름 없는 행성',(x.fr?'♥ 친구 · ':'')+'주인 '+(x.o||'여행자'),[['방문',function(){visitPlanet(x)}],['⋯',function(){openActs({uid:x.id,name:x.o,tp:'planet',label:(x.o||'여행자')+'님의 행성'})},'ghost']]))});
 }
 function renderVisits(){
   var box=document.getElementById(VIEW.on?'vilist':'pvlist'); if(!box)return; box.textContent='';
-  if(!VISL.length){var e=document.createElement('p'); e.className='note'; e.textContent=VIEW.on?'아직 다녀간 우주선이 없어요. 첫 방문자가 되어 보세요.':(ME.pl.v==='all'?'아직 다녀간 우주선이 없어요.':'공개로 바꾸면 방문자가 여기에 보여요.'); box.appendChild(e); return}
-  VISL.forEach(function(v){box.appendChild(li(v.n||'여행자',v.msg||'다녀갔어요',null))});
+  var all=visAll();
+  if(!all.length){var e=document.createElement('p'); e.className='note'; e.textContent=VIEW.on?'아직 다녀간 우주선이 없어요. 첫 방문자가 되어 보세요.':(ME.pl.v!=='me'?'아직 다녀간 우주선이 없어요.':'공개로 바꾸면 방문자가 여기에 보여요.'); box.appendChild(e); return}
+  all.forEach(function(v){
+    var mine=FB.user&&v.id===FB.user.uid;
+    box.appendChild(li((v.live?'● ':'')+(v.n||'여행자'),v.live?'지금 접속 중':(v.msg||'다녀갔어요'),mine?null:[['⋯',function(){openActs({uid:v.id,name:v.n,tp:'visit',msg:v.msg,planet:VIEW.on?VIEW.uid:(FB.user&&FB.user.uid),label:(v.n||'여행자')+'님'})},'ghost']]));
+  });
+}
+function renderBlocked(){
+  var box=document.getElementById('bllist'); if(!box)return; box.textContent='';
+  var bl=ME.bl||[]; if(!bl.length){var e=document.createElement('p'); e.className='note'; e.textContent='차단한 사용자가 없어요.'; box.appendChild(e); return}
+  bl.forEach(function(u){box.appendChild(li((ME.bn&&ME.bn[u])||'사용자',null,[['해제',function(){unblock(u)}]]))});
+}
+function renderFriends(){
+  var q=document.getElementById('frqlist'), f=document.getElementById('frlist'); if(!q||!f)return; q.textContent=''; f.textContent='';
+  FRQ.filter(function(r){return !isBlocked(r.from)}).forEach(function(r){q.appendChild(li(r.fn||'여행자','친구 신청을 보냈어요',[['수락',function(){acceptReq(r)}],['거절',function(){declineReq(r)},'ghost']]))});
+  if(!q.children.length){var e1=document.createElement('p'); e1.className='note'; e1.textContent='받은 신청이 없어요.'; q.appendChild(e1)}
+  FR.forEach(function(u){
+    var pl=NB.filter(function(x){return x.id===u})[0], bt=[];
+    if(pl)bt.push(['방문',function(){visitPlanet(pl)}]); bt.push(['삭제',function(){removeFriend(u)},'ghost']);
+    f.appendChild(li(FRN[u]||'친구','친구',bt));
+  });
+  if(!f.children.length){var e2=document.createElement('p'); e2.className='note'; e2.textContent='아직 친구가 없어요. 다른 행성을 방문해서 친구 신청을 보내 보세요.'; f.appendChild(e2)}
+  var tb=document.querySelector('#plp .tab[data-t="fr"]'); if(tb)tb.textContent='친구'+(FRQ.length?' ('+FRQ.length+')':'');
 }
 function showPane(k){
-  ['pl','sh','ex','vi'].forEach(function(n){var el=document.getElementById('pane-'+n); if(el)el.hidden=n!==k});
+  ['pl','sh','ex','fr','vi'].forEach(function(n){var el=document.getElementById('pane-'+n); if(el)el.hidden=n!==k});
   [].forEach.call(document.querySelectorAll('#plp .tab'),function(x){x.classList.toggle('on',x.dataset.t===k)});
   document.querySelector('#plp .tabs').style.display=k==='vi'?'none':'';
   if(k==='ex')loadNeighbors();
+  if(k==='fr'){renderFriends(); loadFriends()}
+  if(k==='pl')renderBlocked();
 }
 function visitPlanet(x){
-  VIEW.on=true; VIEW.pl={n:x.n,p:x.p||0,r:x.r?1:0,m:x.m||0}; VIEW.uid=x.id; VIEW.owner=x.o||'여행자'; VISL=[];
-  document.getElementById('vi-title').textContent=(x.n||'이름 없는 행성')+' · '+VIEW.owner; document.getElementById('in-vi-m').value='';
+  VIEW.on=true; VIEW.pl={n:x.n,p:x.p||0,r:x.r?1:0,m:x.m||0}; VIEW.uid=x.id; VIEW.owner=x.o||'여행자'; VISL=[]; LIVEL=[];
+  document.getElementById('vi-title').textContent=(x.n||'이름 없는 행성')+' · '+VIEW.owner+(FR.indexOf(x.id)>-1?'  ♥':''); document.getElementById('in-vi-m').value='';
+  document.getElementById('vi-fr').style.display=FR.indexOf(x.id)>-1?'none':'';
   showPane('vi'); renderVisits(); document.getElementById('back').textContent='내 행성으로';
   loadVisits(x.id).then(function(a){if(VIEW.on&&VIEW.uid===x.id){VISL=a; renderVisits()}});
+  hb(); pollLive(x.id);
   fl.on=true; fl.t=.58; trail.length=0;
 }
+function leaveLive(){ if(VIEW.on&&VIEW.uid&&FB.user&&FB.db)FB.F.deleteDoc(FB.F.doc(FB.db,'planets',VIEW.uid,'live',FB.user.uid)).catch(function(){}) }
 function closeVisit(){
-  VIEW.on=false; VIEW.uid=null; VISL=[]; showPane('pl'); document.getElementById('back').textContent='돌아가기'; fl.on=true; fl.t=.58; trail.length=0; ownVisits();
+  leaveLive(); VIEW.on=false; VIEW.uid=null; VISL=[]; LIVEL=[]; showPane('pl'); document.getElementById('back').textContent='돌아가기'; fl.on=true; fl.t=.58; trail.length=0; ownVisits();
 }
 function ownVisits(){
-  if(FB.user&&ME.pl.v==='all')loadVisits(FB.user.uid).then(function(a){if(!VIEW.on){VISL=a; renderVisits()}}); else {VISL=[]; renderVisits()}
+  if(FB.user&&ME.pl.v!=='me'){loadVisits(FB.user.uid).then(function(a){if(!VIEW.on){VISL=a; renderVisits()}}); pollLive(FB.user.uid)} else {VISL=[]; LIVEL=[]; renderVisits()}
 }
 function markVisit(){
   if(!FB.user){toast('로그인하면 방명록을 남길 수 있어요.');return}
   var msg=document.getElementById('in-vi-m').value.slice(0,40);
   FB.F.setDoc(FB.F.doc(FB.db,'planets',VIEW.uid,'visits',FB.user.uid),{n:nick().slice(0,20),sh:{h:ME.sh.h,c:ME.sh.c,f:ME.sh.f,e:ME.sh.e,n:(ME.sh.n||'').slice(0,12)},msg:msg,t:Date.now()}).then(function(){
     toast('다녀갔어요. 방명록에 남겼어요.'); loadVisits(VIEW.uid).then(function(a){VISL=a; renderVisits()});
-  }).catch(function(){toast('남기지 못했어요. 이 행성이 비공개로 바뀌었을 수 있어요.')});
+  }).catch(function(){toast('남기지 못했어요. 이 행성이 비공개로 바뀌었거나 차단되었을 수 있어요.')});
+}
+/* ===== 4단계: 접속 중 방문자 · 친구 · 신고 · 차단 ===== */
+function hb(){
+  if(!VIEW.on||!FB.user||!FB.db||!VIEW.uid)return;
+  FB.F.setDoc(FB.F.doc(FB.db,'planets',VIEW.uid,'live',FB.user.uid),{n:nick().slice(0,20),sh:{h:ME.sh.h,c:ME.sh.c,f:ME.sh.f,e:ME.sh.e,n:(ME.sh.n||'').slice(0,12)},t:Date.now()}).catch(function(){});
+}
+function pollLive(uid){
+  if(!uid)return;
+  fbLoad().then(function(){return FB.F.getDocs(FB.F.query(FB.F.collection(FB.db,'planets',uid,'live'),FB.F.limit(12)))}).then(function(s){
+    var a=[], now=Date.now(); s.forEach(function(d){var x=d.data(); x.id=d.id; if(x.t>now-70000&&!isBlocked(d.id)&&(!FB.user||d.id!==FB.user.uid)){x.live=true; a.push(x)}});
+    if((VIEW.on&&VIEW.uid===uid)||(!VIEW.on&&FB.user&&uid===FB.user.uid)){LIVEL=a; renderVisits()}
+  }).catch(function(){});
+}
+function presenceTick(){
+  if(VIEW.on){hb(); pollLive(VIEW.uid)}
+  else if(plTarget===1&&FB.user&&ME.pl.v!=='me')pollLive(FB.user.uid);
+  else LIVEL=[];
+}
+function visAll(){var ids={}, a=LIVEL.slice(0,6); a.forEach(function(v){ids[v.id]=1}); VISL.forEach(function(v){if(!ids[v.id]&&!isBlocked(v.id))a.push(v)}); return a.slice(0,8)}
+function loadFriends(){
+  if(!FB.user)return Promise.resolve();
+  return fbLoad().then(function(){
+    return Promise.all([FB.F.getDocs(FB.F.query(FB.F.collection(FB.db,'friends'),FB.F.where('m','array-contains',FB.user.uid))),FB.F.getDocs(FB.F.query(FB.F.collection(FB.db,'frq'),FB.F.where('to','==',FB.user.uid)))]);
+  }).then(function(r){
+    FR=[]; FRN={}; r[0].forEach(function(d){var x=d.data(), o=x.m[0]===FB.user.uid?x.m[1]:x.m[0]; FR.push(o); FRN[o]=(x.n&&x.n[o])||'친구'});
+    FRQ=[]; r[1].forEach(function(d){var x=d.data(); x.id=d.id; FRQ.push(x)});
+    renderFriends();
+    var key=FR.slice().sort().join(',');
+    if(key!==lastFl){lastFl=key; if(ME.pl.v==='fr')pubSync()}
+  }).catch(function(){});
+}
+function sendFriendReq(uid,name){
+  if(!FB.user){toast('로그인하면 친구 신청을 보낼 수 있어요.');return}
+  if(FR.indexOf(uid)>-1){toast('이미 친구예요.');return}
+  FB.F.setDoc(FB.F.doc(FB.db,'frq',uid+'_'+FB.user.uid),{from:FB.user.uid,to:uid,fn:nick().slice(0,20),t:Date.now()}).then(function(){toast((name||'상대')+'님에게 친구 신청을 보냈어요.')}).catch(function(){toast('신청하지 못했어요. 잠시 뒤에 다시 시도해 주세요.')});
+}
+function acceptReq(r){
+  var a=FB.user.uid, b=r.from, m=a<b?[a,b]:[b,a], n={}; n[a]=nick().slice(0,20); n[b]=(r.fn||'친구').slice(0,20);
+  FB.F.setDoc(FB.F.doc(FB.db,'friends',m[0]+'_'+m[1]),{m:m,n:n,t:Date.now()}).then(function(){return FB.F.deleteDoc(FB.F.doc(FB.db,'frq',r.id))}).then(function(){toast('친구가 되었어요.'); NBT=0; loadFriends()}).catch(function(){toast('수락하지 못했어요.')});
+}
+function declineReq(r){FB.F.deleteDoc(FB.F.doc(FB.db,'frq',r.id)).then(loadFriends).catch(function(){})}
+function removeFriend(u){
+  var a=FB.user.uid, m=a<u?[a,u]:[u,a];
+  FB.F.deleteDoc(FB.F.doc(FB.db,'friends',m[0]+'_'+m[1])).then(function(){toast('친구에서 삭제했어요.'); NBT=0; lastFl=''; loadFriends()}).catch(function(){});
+}
+function blockUser(uid,name){
+  if(!uid||(FB.user&&uid===FB.user.uid))return;
+  ME.bl=ME.bl||[]; ME.bn=ME.bn||{}; if(ME.bl.indexOf(uid)<0)ME.bl.push(uid); ME.bn[uid]=(name||'사용자').slice(0,20); saveMe();
+  if(FB.user&&FB.db){FB.F.deleteDoc(FB.F.doc(FB.db,'planets',FB.user.uid,'visits',uid)).catch(function(){}); FB.F.deleteDoc(FB.F.doc(FB.db,'planets',FB.user.uid,'live',uid)).catch(function(){})}
+  NB=NB.filter(function(x){return x.id!==uid}); VISL=VISL.filter(function(v){return v.id!==uid}); LIVEL=LIVEL.filter(function(v){return v.id!==uid});
+  renderEx(); renderVisits(); renderBlocked(); toast((name||'사용자')+'님을 차단했어요.');
+  if(VIEW.on&&VIEW.uid===uid)closeVisit();
+}
+function unblock(uid){ME.bl=(ME.bl||[]).filter(function(x){return x!==uid}); if(ME.bn)delete ME.bn[uid]; saveMe(); NBT=0; renderBlocked(); loadNeighbors(); toast('차단을 해제했어요.')}
+var REASONS=['스팸·광고','불쾌한 내용','사칭','기타'];
+function openActs(c){
+  repCtx=c; var box=document.getElementById('rep-a'); box.textContent=''; document.getElementById('rep-t').textContent=c.label||'사용자';
+  function mk(t,fn){var x=document.createElement('button'); x.type='button'; x.textContent=t; x.addEventListener('click',fn); box.appendChild(x)}
+  if(c.tp==='planet')mk('친구 신청',function(){closeRep(); sendFriendReq(c.uid,c.name)});
+  mk('차단',function(){closeRep(); blockUser(c.uid,c.name)});
+  mk('신고',function(){
+    box.textContent=''; document.getElementById('rep-t').textContent='신고 사유';
+    REASONS.forEach(function(r){mk(r,function(){sendReport(r)})});
+  });
+  document.getElementById('rep').classList.add('on');
+}
+function closeRep(){document.getElementById('rep').classList.remove('on')}
+function sendReport(why){
+  var c=repCtx; if(!c)return;
+  if(!FB.user){toast('로그인하면 신고할 수 있어요.'); closeRep(); return}
+  FB.F.setDoc(FB.F.doc(FB.db,'reports',FB.user.uid+'_'+Date.now()),{by:FB.user.uid,tp:c.tp,target:c.uid,planet:c.planet||c.uid,name:(c.name||'').slice(0,20),msg:(c.msg||'').slice(0,40),why:why,t:Date.now()}).then(function(){
+    closeRep(); toast('신고했어요. 확인할게요. 해당 사용자는 차단됐어요.'); blockUser(c.uid,c.name);
+  }).catch(function(){closeRep(); toast('신고하지 못했어요. 잠시 뒤에 다시 시도해 주세요.')});
 }
 function nbAt(px,py){for(var i=0;i<NBP.length;i++){if(Math.hypot(px-NBP[i][0],py-NBP[i][1])<NBP[i][2])return NBP[i][3]}return -1}
 function drawVisitors(x,y,R,t,front){
-  if(!plScene||!VISL.length)return;
+  var vs0=plScene?visAll():[]; if(!vs0.length)return;
   var ct=Math.cos(-.32), st=Math.sin(-.32), d=dpr;
-  for(var i=0;i<Math.min(VISL.length,8);i++){
-    var v=VISL[i], q=i%3, a=t*(.2+.04*q)+i*1.9, rx=R*(3+.38*q), ry=R*(.86+.1*q), ox=Math.cos(a)*rx, oy=Math.sin(a)*ry, px=x+ox*ct-oy*st, py=y+ox*st+oy*ct, z=Math.sin(a);
+  for(var i=0;i<vs0.length;i++){
+    var v=vs0[i], q=i%3, a=t*(.2+.04*q)+i*1.9, rx=R*(3+.38*q), ry=R*(.86+.1*q), ox=Math.cos(a)*rx, oy=Math.sin(a)*ry, px=x+ox*ct-oy*st, py=y+ox*st+oy*ct, z=Math.sin(a);
     if((z>=0)!==front)continue;
     var dx=-Math.sin(a)*rx, dy=Math.cos(a)*ry, ang=Math.atan2(dx*st+dy*ct,dx*ct-dy*st), L=R*.22*(1+.14*z), vs=v.sh||{h:0,c:0,f:0,e:0};
-    drawShip(px,py,ang,L,{h:vs.h|0,c:vs.c|0,f:vs.f|0,e:vs.e|0},t,.7);
-    ctx.save(); ctx.fillStyle='rgba(222,238,255,.85)'; ctx.font=(10.5*d)+'px Pretendard Variable, sans-serif'; ctx.textAlign='center'; ctx.fillText(v.n||'',px,py+L*1.5); ctx.restore();
+    if(v.live){ctx.save(); ctx.strokeStyle='rgba(120,255,200,'+(.35+.3*Math.sin(t*3))+')'; ctx.lineWidth=d*1.5; ctx.beginPath(); ctx.arc(px,py,L*(1.0+.12*Math.sin(t*3)),0,6.2832); ctx.stroke(); ctx.restore()}
+    drawShip(px,py,ang,L,{h:vs.h|0,c:vs.c|0,f:vs.f|0,e:vs.e|0},t,v.live?1.1:.7);
+    ctx.save(); ctx.fillStyle=v.live?'rgba(150,255,215,.95)':'rgba(222,238,255,.85)'; ctx.font=(10.5*d)+'px Pretendard Variable, sans-serif'; ctx.textAlign='center'; ctx.fillText((v.live?'● ':'')+(v.n||''),px,py+L*1.5); ctx.restore();
   }
 }
 
@@ -732,15 +858,14 @@ function closePlanet(){
 }
 function backAct(){ if(VIEW.on)closeVisit(); else if(plTarget===1)closePlanet(); else leave(); }
 var CTL=[['pl','p','chip',[0,1,2,3,4,5],PLP.map(function(p){return p[0]}),PLP.map(function(p){return p[2]})],
-         ['pl','r','sg',[0,1],['없음','있음']],['pl','m','sg',[0,1,2,3],['0','1','2','3']],['pl','v','sg',['me','fr','all'],['나만','친구만(준비 중)','모두']],
+         ['pl','r','sg',[0,1],['없음','있음']],['pl','m','sg',[0,1,2,3],['0','1','2','3']],['pl','v','sg',['me','fr','all'],['나만','친구만','모두']],
          ['sh','h','sg',[0,1,2,3],HULLN],['sh','c','chip',[0,1,2,3,4,5],['흰색','하늘','살구','연보라','분홍','민트'],SHC],['sh','f','chip',[0,1,2,3,4,5],['푸른 불꽃','주황 불꽃','민트 불꽃','분홍 불꽃','노란 불꽃','흰 불꽃'],FLC],['sh','e','sg',[0,1,2,3,4,5],EMBN]];
 function pick(o,k,v){
   if(o==='pl'&&k==='v'){
-    if(v==='fr'){toast('친구 기능은 다음 단계에서 열려요. 지금은 나만 볼 수 있어요.');return}
-    if(v==='all'&&!FB.user){toast('로그인하면 모두에게 공개할 수 있어요.');return}
+    if((v==='fr'||v==='all')&&!FB.user){toast('로그인하면 공개 범위를 바꿀 수 있어요.');return}
   }
   ME[o][k]=v; saveMe(); refreshPanel();
-  if(o==='pl'&&k==='v'){toast(v==='all'?'이제 내 행성이 모두에게 보여요. 행성 이름, 우주선, 닉네임이 공개돼요.':'내 행성을 비공개로 바꿨어요.'); ownVisits()}
+  if(o==='pl'&&k==='v'){toast(v==='all'?'이제 내 행성이 모두에게 보여요. 행성 이름, 우주선, 닉네임이 공개돼요.':v==='fr'?'이제 친구만 내 행성을 볼 수 있어요.':'내 행성을 비공개로 바꿨어요.'); lastFl=''; ownVisits()}
 }
 function refreshPanel(){
   CTL.forEach(function(c){var el=document.getElementById('ctl-'+c[0]+'-'+c[1]); if(!el)return; [].forEach.call(el.children,function(b,i){b.classList.toggle('on',ME[c[0]][c[1]]===c[3][i])})});
@@ -758,6 +883,9 @@ function buildPanel(){
   });
   [['in-pl-n','pl','n',12],['in-sh-n','sh','n',12],['in-pl-o','pl','o',14]].forEach(function(p){var el=document.getElementById(p[0]); el.addEventListener('input',function(){ME[p[1]][p[2]]=el.value.slice(0,p[3]);saveMe()})});
   document.getElementById('vimark').addEventListener('click',markVisit);
+  document.getElementById('vi-fr').addEventListener('click',function(){sendFriendReq(VIEW.uid,VIEW.owner)});
+  document.getElementById('vi-more').addEventListener('click',function(){openActs({uid:VIEW.uid,name:VIEW.owner,tp:'planet',label:VIEW.owner+'님의 행성'})});
+  document.getElementById('rep-x').addEventListener('click',closeRep);
   [].forEach.call(document.querySelectorAll('#plp .tab'),function(tb){tb.addEventListener('click',function(){showPane(tb.dataset.t)})});
   document.getElementById('fly').addEventListener('click',function(){ if(!fl.on){fl.on=true;fl.t=0;trail.length=0} });
 }
@@ -955,6 +1083,8 @@ init(); layout(); paintTag(false);
   document.addEventListener('click',function(e){if(!um.contains(e.target))um.classList.remove('on')});
   try{if(localStorage.getItem('lhy.auth')==='1')fbLoad().catch(function(){})}catch(e){}
   setTimeout(function(){fbLoad().catch(function(){})},7000);
+  setInterval(presenceTick,20000);
+  addEventListener('beforeunload',leaveLive);
 })();
 document.getElementById('mec').addEventListener('click',function(e){e.stopPropagation();ME.c=(ME.c+1)%5;saveMe()});
 (function(){var m=document.getElementById('me');m.addEventListener('mouseenter',function(){meOver=true});m.addEventListener('mouseleave',function(){meOver=false})})();
