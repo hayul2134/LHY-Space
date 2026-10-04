@@ -823,7 +823,7 @@ function drawPlanetBody(x,y,R,t,dt){
   ctx.drawImage(planetSprite(pl.p),x-R*1.28,y-R*1.28,R*2.56,R*2.56);
   if(pl.r)ringHalf(false); moons(true); drawVisitors(x,y,R,t,true); if(front)ship();
 }
-function nodeInfo(){var m=Math.min(W,H);return mobile?{x:W/2,y:H*.5,r:W*.075}:{x:W*.5,y:H*.57,r:m*.05}}
+function nodeInfo(){var m=Math.min(W,H);return mobile?{x:W/2,y:H*.43,r:W*.075}:{x:W*.5,y:H*.47,r:m*.05}}
 function sceneInfo(){return mobile?{x:W/2,y:H*.27,r:Math.min(W*.16,H*.11)}:{x:W*.34,y:H*.52,r:Math.min(W*.13,H*.2)}}
 function nearPl(px,py){var n=nodeInfo();return nodeShown&&Math.hypot(px-n.x,py-n.y)<n.r*2.2}
 function placePl(){var n=nodeInfo();if(plBtn){plBtn.style.left=n.x+'px';plBtn.style.top=(n.y+n.r*1.7+8)+'px'}}
@@ -976,8 +976,8 @@ function layout(){
   mobile=W<700; mcx=W/2; mcy=mobile?H*.54:(H+105)/2;
   mainR=mobile?Math.min(W*.4,H*.3):Math.min(W*.37,(H-135)/1.31);
   var P;
-  if(mobile){var u=W*.2; P=[[.3,.24,u],[.7,.4,u*.92],[.3,.57,u*.86],[.7,.74,u*.95]]}
-  else{var m=Math.min(W,H); P=[[.26,.42,m*.24],[.71,.34,m*.21],[.34,.77,m*.19],[.73,.72,m*.22]]}
+  if(mobile){var u=W*.2; P=[[.3,.22,u],[.7,.35,u*.92],[.3,.49,u*.86],[.7,.63,u*.95]]}
+  else{var m=Math.min(W,H); P=[[.26,.362,m*.24],[.71,.30,m*.21],[.34,.635,m*.19],[.73,.596,m*.22]]}
   SERV.forEach(function(s,i){
     s.fx=mobile?P[i][0]*W:P[i][0]*W; s.fy=P[i][1]*H; s.R=P[i][2];
     var l=labelBtns[i]; l.style.left=s.fx+'px'; l.style.top=(s.fy+s.R*s.tilt*1.02+14)+'px';
