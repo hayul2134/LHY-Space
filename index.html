@@ -1021,13 +1021,12 @@ function frame(now){
   var zoom=reduce?1+e*.12:Math.exp(Math.log(15)*e), a1=(1-sm(.42,.9,e))*sm(0,.4,introT), ip=.1+.9*(1-Math.pow(1-introT,3.2));
   hoverMain+=((cv.classList.contains('go')&&target===0?1:0)-hoverMain)*.1;
   burst(cx,cy,mainR*dpr,introT,.52);
-  if(a1>0||(e>.3&&e<1)){
+  if(a1>0){
     var tl=.52+.1*e; flares(a1*(1-sm(.05,.3,e)),t);
     var R0=mainR*dpr*ip*(1+.015*hoverMain), mR=R0*zoom, mT=tl+(reduce?0:py3*.05*(1-e)+.38*Math.pow(1-introT,2.5)), mI=-.35+(reduce?0:px3*.04*(1-e)+.35*Math.pow(1-introT,2.5)), mRot=reduce?.4:.4-t*.045+.5*Math.pow(1-introT,3);
-    var mv=meOff(R0,mT,mI,mRot), gx=cx-e*zoom*mv[0], gy=cy-e*zoom*mv[1];
+    var gx=cx, gy=cy;
     drawGal(main,gx,gy,mR,mT,mI,mRot,a1*(1+.18*hoverMain),1+Math.min(zoom-1,3)*.3,t,1-sm(.1,.55,e));
-    drawMe(gx,gy,mR,mT,mI,mRot,sm(0,.4,introT)*(1-sm(.78,.95,e)),t,1+e*e*9);
-    bloom(gx+zoom*mv[0],gy+zoom*mv[1],R0,e,MEC[ME.c%5]);
+    drawMe(gx,gy,mR,mT,mI,mRot,sm(0,.4,introT)*(1-sm(.05,.3,e)),t,1);
   }
 
   /* 서비스 은하들 */
