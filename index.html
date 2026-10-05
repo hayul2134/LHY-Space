@@ -163,6 +163,27 @@ body{background:
 #mk .mkc{display:flex;gap:10px;justify-content:center}
 #mk .mkc button{width:30px;height:30px;border-radius:50%;border:2px solid transparent;cursor:pointer;box-shadow:inset 0 0 0 1px rgba(255,255,255,.35)}
 #mk .mkc button.on{border-color:#fff;box-shadow:0 0 0 3px rgba(111,179,255,.6)}
+#galhud{position:fixed;left:50%;bottom:calc(34px + env(safe-area-inset-bottom));transform:translate(-50%,12px);display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:26px;border:1px solid var(--line);background:linear-gradient(145deg,rgba(255,255,255,.16),rgba(255,255,255,.06));backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);opacity:0;pointer-events:none;transition:opacity .5s ease,transform .5s ease;box-shadow:0 20px 44px rgba(2,8,30,.45);max-width:calc(100vw - 24px)}
+#galhud.on{opacity:1;pointer-events:auto;transform:translate(-50%,0)}
+#galhud .gi{min-width:170px;text-align:center}
+#galhud .gi b{display:block;font:700 16px var(--body)}
+#galhud .gi small{display:block;margin-top:3px;font:400 12px var(--body);color:var(--muted)}
+#galhud .glass{padding:9px 14px;font-size:13px;white-space:nowrap}
+@media (max-width:700px){#galhud{gap:8px;padding:10px 12px}#galhud .gi{min-width:100px}#galhud .gi b{font-size:14px}#intinfo{top:112px}}
+#intinfo{position:fixed;left:clamp(18px,3.4vw,52px);top:96px;max-width:min(420px,60vw);pointer-events:none;opacity:0;transition:opacity .6s ease}
+#intinfo.on{opacity:1}
+#intinfo b{display:block;font:700 22px var(--body);text-shadow:0 0 16px rgba(2,8,30,.7)}
+#intinfo small{display:block;margin-top:5px;font:400 13px/1.5 var(--body);color:rgba(236,244,255,.88);text-shadow:0 0 10px rgba(2,8,30,.8)}
+#decbar{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));transform:translate(-50%,12px);width:min(860px,calc(100vw - 20px));padding:12px 14px;border-radius:24px;border:1px solid var(--line);background:linear-gradient(145deg,rgba(255,255,255,.16),rgba(255,255,255,.06));backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);display:flex;flex-direction:column;gap:10px;opacity:0;pointer-events:none;transition:opacity .5s ease,transform .5s ease;box-shadow:0 20px 44px rgba(2,8,30,.45)}
+#decbar.on{opacity:1;pointer-events:auto;transform:translate(-50%,0)}
+#decbar .dr{display:flex;flex-wrap:wrap;gap:7px;align-items:center}
+#decbar .dr2{display:flex;gap:6px}
+#decbar .dl{font:500 12px var(--body);color:var(--muted)}
+#decbar button{padding:6px 11px;border-radius:999px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.07);color:var(--ice);font:500 12px var(--body);cursor:pointer}
+#decbar button.on{background:rgba(111,179,255,.38);border-color:rgba(160,205,255,.85)}
+#decbar #dec-ok{padding:8px 18px;font-size:13px;margin-left:auto}
+#decbar input{flex:1;min-width:130px;padding:7px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.07);color:var(--ice);font:500 12.5px var(--body);outline:none}
+#decbar #dec-cnt{font:500 12px var(--body);color:var(--muted)}
 #st{position:fixed;left:0;top:0;pointer-events:none;opacity:0;transition:opacity .25s ease;will-change:transform}
 #st span{display:flex;align-items:center;gap:8px;padding:5px 11px;border-radius:999px;border:1px solid rgba(255,255,255,.22);background:linear-gradient(145deg,rgba(255,255,255,.16),rgba(255,255,255,.05));backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font:500 11.5px/1 var(--body);color:var(--ice);white-space:nowrap}
 #st em{font-style:normal;opacity:.55}
@@ -209,6 +230,7 @@ body{background:
 <section id="plp" aria-label="내 행성과 우주선 꾸미기">
   <div class="tabs"><button type="button" class="tab on" data-t="pl">행성</button><button type="button" class="tab" data-t="sh">우주선</button><button type="button" class="tab" data-t="ex">탐험</button><button type="button" class="tab" data-t="fr">친구</button></div>
   <div id="pane-pl">
+    <button type="button" id="plin" class="glass big" style="margin-top:0;margin-bottom:12px">내 행성 안 꾸미기</button>
     <input id="in-pl-n" maxlength="12" placeholder="행성 이름" aria-label="행성 이름">
     <div class="row"><span>색</span><div id="ctl-pl-p" class="opts"></div></div>
     <div class="row"><span>고리</span><div id="ctl-pl-r" class="opts"></div></div>
@@ -241,6 +263,9 @@ body{background:
 <div id="mk" role="dialog" aria-modal="true" aria-label="내 별 만들기"><div class="rbox"><b id="mk-t">내 별 만들기</b><p id="mk-p"></p><input id="mk-n" maxlength="12" placeholder="별 이름 (최대 12자)" aria-label="별 이름"><div class="mkr"><button type="button" id="mk-real-btn" class="glass">별 이름 가져오기</button><small id="mk-real"></small></div><div id="mk-c" class="mkc"></div><div id="mk-h" class="mkh"></div><button type="button" id="mk-ok" class="glass">별 만들기</button><button type="button" id="mk-x" class="glass">나중에</button></div></div>
 <div id="st" aria-hidden="true"><span><b></b><em>⋯</em></span></div>
 <div id="rep" role="dialog" aria-modal="true" aria-label="신고와 차단"><div class="rbox"><b id="rep-t"></b><div id="rep-a" class="ra"></div><button type="button" id="rep-x" class="glass">닫기</button></div></div>
+<div id="galhud"><button type="button" id="gal-l" class="glass" aria-label="이전 행성">◀</button><div class="gi"><b id="gal-n"></b><small id="gal-o"></small></div><button type="button" id="gal-go" class="glass">들어가기</button><button type="button" id="gal-r" class="glass" aria-label="다음 행성">▶</button></div>
+<div id="intinfo"><b></b><small></small></div>
+<div id="decbar"><div id="dec-items" class="dr"></div><div class="dr"><span class="dl">하늘</span><div id="dec-sky" class="dr2"></div><input id="dec-w" maxlength="30" placeholder="환영 한마디 (선택)" aria-label="환영 한마디"><span id="dec-cnt">0/24</span><button type="button" id="dec-er" class="sg">지우개</button><button type="button" id="dec-un" class="sg">되돌리기</button><button type="button" id="dec-ok" class="glass">완료</button></div></div>
 <div id="plname"><b></b><small></small></div>
 <div id="plhint">공개된 행성과 친구의 행성을 우주선으로 방문해 보세요</div>
 <div id="toast" role="status"></div>
@@ -274,7 +299,7 @@ function paintTag(pop){
 function explore(i){
   var nm=SERV[i].key||SERV[i].name, isNew=ME.sv.indexOf(nm)<0;
   if(isNew){ME.sv.push(nm);saveMe();paintTag(true)}
-  if(i===3){openPlanet(); showPane('ex'); return}
+  if(i===3){openGallery(); return}
   toast(SERV[i].name+' 공간은 아직 준비 중이에요.'+(isNew?' 내 별자리에 별이 하나 켜졌어요.':''));
 }
 
@@ -572,7 +597,7 @@ function pubSync(){
   if(!FB.user||!FB.db)return;
   var pl=ME.pl, ref=FB.F.doc(FB.db,'planets',FB.user.uid);
   if(pl.v==='all'||pl.v==='fr'){
-    FB.F.setDoc(ref,{n:(pl.n||'나의 행성').slice(0,12),p:pl.p,r:pl.r,m:pl.m,sh:{h:ME.sh.h,c:ME.sh.c,f:ME.sh.f,e:ME.sh.e,n:(ME.sh.n||'').slice(0,12)},o:nick().slice(0,20),vis:pl.v,fl:pl.v==='fr'?FR.slice(0,100):[],t:Date.now()}).catch(function(){});
+    FB.F.setDoc(ref,{n:(pl.n||'나의 행성').slice(0,12),p:pl.p,r:pl.r,m:pl.m,sh:{h:ME.sh.h,c:ME.sh.c,f:ME.sh.f,e:ME.sh.e,n:(ME.sh.n||'').slice(0,12)},o:nick().slice(0,20),vis:pl.v,fl:pl.v==='fr'?FR.slice(0,100):[],d:(pl.d||[]).slice(0,72),sk:pl.sk|0,w:(pl.w||'').slice(0,30),t:Date.now()}).catch(function(){});
   }else{FB.F.deleteDoc(ref).catch(function(){})}
 }
 function loadNeighbors(){
@@ -644,16 +669,19 @@ function showPane(k){
 }
 function visitPlanet(x){
   VIEW.on=true; VIEW.pl={n:x.n,p:x.p||0,r:x.r?1:0,m:x.m||0}; VIEW.uid=x.id; VIEW.owner=x.o||'여행자'; VISL=[]; LIVEL=[];
+  INT={uid:x.id,pl:VIEW.pl,d:(x.d||[]).slice(0,72),sk:x.sk|0,w:x.w||'',owner:VIEW.owner,edit:false}; intScroll=0; intTarget=1;
   document.getElementById('vi-title').textContent=(x.n||'이름 없는 행성')+' · '+VIEW.owner+(FR.indexOf(x.id)>-1?'  ♥':''); document.getElementById('in-vi-m').value='';
   document.getElementById('vi-fr').style.display=FR.indexOf(x.id)>-1?'none':'';
-  showPane('vi'); renderVisits(); document.getElementById('back').textContent='내 행성으로';
-  loadVisits(x.id).then(function(a){if(VIEW.on&&VIEW.uid===x.id){VISL=a; renderVisits()}});
+  plPanel.classList.add('on'); plHint.classList.remove('on');
+  showPane('vi'); renderVisits(); document.getElementById('back').textContent=(plTarget===1?'내 행성으로':'행성 목록으로');
+  setIntInfo(); loadVisits(x.id).then(function(a){if(VIEW.on&&VIEW.uid===x.id){VISL=a; renderVisits()}});
   hb(); pollLive(x.id);
-  fl.on=true; fl.t=.58; trail.length=0;
 }
 function leaveLive(){ if(VIEW.on&&VIEW.uid&&FB.user&&FB.db)FB.F.deleteDoc(FB.F.doc(FB.db,'planets',VIEW.uid,'live',FB.user.uid)).catch(function(){}) }
 function closeVisit(){
-  leaveLive(); VIEW.on=false; VIEW.uid=null; VISL=[]; LIVEL=[]; showPane('pl'); document.getElementById('back').textContent='돌아가기'; fl.on=true; fl.t=.58; trail.length=0; ownVisits();
+  leaveLive(); VIEW.on=false; VIEW.uid=null; VISL=[]; LIVEL=[]; intTarget=0; setIntInfo();
+  if(plTarget===1){showPane('pl'); ownVisits()} else plPanel.classList.remove('on');
+  document.getElementById('back').textContent='돌아가기';
 }
 function ownVisits(){
   if(FB.user&&ME.pl.v!=='me'){loadVisits(FB.user.uid).then(function(a){if(!VIEW.on){VISL=a; renderVisits()}}); pollLive(FB.user.uid)} else {VISL=[]; LIVEL=[]; renderVisits()}
@@ -880,7 +908,7 @@ function closePlanet(){
   if(plTarget===0)return;
   plTarget=0; plPanel.classList.remove('on'); plHint.classList.remove('on'); fl.on=false; VIEW.on=false; VISL=[]; document.getElementById('back').textContent='은하 밖으로';
 }
-function backAct(){ if(VIEW.on)closeVisit(); else if(plTarget===1)closePlanet(); else leave(); }
+function backAct(){ if(intTarget&&INT.edit)finishEdit(); else if(VIEW.on)closeVisit(); else if(galTarget)closeGallery(); else if(plTarget===1)closePlanet(); else leave(); }
 var CTL=[['pl','p','chip',[0,1,2,3,4,5],PLP.map(function(p){return p[0]}),PLP.map(function(p){return p[2]})],
          ['pl','r','sg',[0,1],['없음','있음']],['pl','m','sg',[0,1,2,3],['0','1','2','3']],['pl','v','sg',['me','fr','all'],['나만','친구만','모두']],
          ['sh','h','sg',[0,1,2,3],HULLN],['sh','c','chip',[0,1,2,3,4,5],['흰색','하늘','살구','연보라','분홍','민트'],SHC],['sh','f','chip',[0,1,2,3,4,5],['푸른 불꽃','주황 불꽃','민트 불꽃','분홍 불꽃','노란 불꽃','흰 불꽃'],FLC],['sh','e','sg',[0,1,2,3,4,5],EMBN]];
@@ -1012,6 +1040,174 @@ function drawStars(cx,cy,R,tilt,inc,rot,a,t){
 }
 function starAt(px,py){for(var i=0;i<STP.length;i++){if(Math.hypot(px-STP[i][0],py-STP[i][1])<22)return STP[i][2]}return -1}
 
+/* ===== 다른 행성 갤러리 · 행성 내부 꾸미기 ===== */
+var galT=0, galTarget=0, intT=0, intTarget=0, INT={uid:null,pl:null,d:[],sk:0,w:'',owner:'',edit:false}, intScroll=0;
+var gScroll=0, gGoal=0, GLH=[], gDrag=null, gDragMoved=false, iDrag=null, decTool=0, galFocus=-1;
+var DEC_NAMES=['나무','소나무','꽃','집','가로등','깃발','수정','텐트','모닥불','풍차','바위','연못'], SKYN=['밤하늘','노을','오로라'];
+var SKYSTARS=(function(){var a=[],sd=7; function r(){sd=(sd*9301+49297)%233280;return sd/233280} for(var i=0;i<90;i++)a.push([r(),r(),.5+r()*1.3,r()*6]); return a})();
+function gSp(){return Math.min(W*.3,320)}
+function glAt(px,py){var b=-1,bd=1e9; for(var i=0;i<GLH.length;i++){var g=GLH[i], dd=Math.hypot(px-g[0],py-g[1]); if(dd<g[2]*1.15&&dd<bd){bd=dd;b=g[3]}} return b}
+function openGallery(){
+  if(galTarget||prog<1)return;
+  galTarget=1; gGoal=0; gScroll=0; labelsEl.classList.remove('on'); document.getElementById('back').textContent='돌아가기';
+  loadNeighbors().then(function(){gGoal=0});
+}
+function closeGallery(){galTarget=0; document.getElementById('back').textContent='은하 밖으로'; document.getElementById('galhud').classList.remove('on')}
+function updateGalHud(){
+  var n=document.getElementById('gal-n'), o=document.getElementById('gal-o'), go=document.getElementById('gal-go');
+  if(!NB.length){n.textContent='아직 공개된 행성이 없어요'; o.textContent='내 행성의 공개를 "모두"로 바꾸면 여기에 나타나요'; go.style.display='none'; galFocus=-1; return}
+  var f=clamp(Math.round(gScroll),0,NB.length-1); galFocus=f; var x=NB[f];
+  n.textContent=(x.n||'이름 없는 행성'); o.textContent=(x.fr?'♥ 친구 · ':'')+'주인 '+(x.o||'여행자')+(x.w?' · '+x.w:''); go.style.display='';
+}
+function drawMiniPlanet(x,y,R,pl,t){
+  var P=PLP[(pl.p|0)%6], d=pl.r;
+  function ringHalf(back){ctx.save(); ctx.translate(x,y); ctx.rotate(-.32); ctx.beginPath(); ctx.ellipse(0,0,R*1.8,R*.5,0,back?Math.PI:0,back?6.2832:Math.PI); ctx.strokeStyle=hexA(P[4],.4); ctx.lineWidth=R*.17; ctx.stroke(); ctx.strokeStyle=hexA(P[1],.85); ctx.lineWidth=R*.04; ctx.stroke(); ctx.restore()}
+  if(d)ringHalf(true);
+  ctx.drawImage(planetSprite(pl.p|0),x-R*1.28,y-R*1.28,R*2.56,R*2.56);
+  if(d)ringHalf(false);
+  for(var i=0;i<(pl.m|0);i++){var a=t*(.5-.1*i)+i*2.2, ox=Math.cos(a)*R*(1.9+.35*i), oy=Math.sin(a)*R*(.5+.1*i); if(Math.sin(a)<0&&false)continue; ctx.fillStyle='#BFC8DD'; ctx.beginPath(); ctx.arc(x+ox,y+oy,R*(.13-.02*i),0,6.2832); ctx.fill()}
+}
+function drawGallery(t,dt,ge,ie){
+  var hud=document.getElementById('galhud'); hud.classList.toggle('on',!!(galTarget&&ge>.9&&ie<.2));
+  GLH.length=0;
+  var a=sm(.45,1,ge)*(1-ie);
+  if(NB.length)gGoal=clamp(gGoal,0,NB.length-1);
+  gScroll+=(gGoal-gScroll)*Math.min(1,dt*6);
+  updateGalHud();
+  if(a<.01||!NB.length)return;
+  var cx=W/2, cy=H*.46, sp=gSp(), base=Math.min(W,H)*.14, foc=clamp(Math.round(gScroll),0,NB.length-1), order=[];
+  for(var i=0;i<NB.length;i++){if(Math.abs(i-gScroll)<=3.4)order.push(i)}
+  order.sort(function(p,q){return Math.abs(q-gScroll)-Math.abs(p-gScroll)});
+  ctx.save(); ctx.scale(dpr,dpr); ctx.textAlign='center'; ctx.font='11px Pretendard Variable, sans-serif';
+  order.forEach(function(i){
+    var dd=i-gScroll, s=1/(1+.32*dd*dd)*(.2+.8*sm(.45,1,ge)), R=base*s*(i===foc?(1+3.4*ie):1), x=cx+dd*sp*(.9+.1*s), y=cy+dd*dd*10+Math.sin(t*.6+i)*4;
+    ctx.globalAlpha=a*(.35+.65*s)*(i===foc?1:(1-ie));
+    drawMiniPlanet(x,y,R,NB[i],t+i);
+    if(i!==foc||ie<.05){ctx.fillStyle='rgba(222,238,255,'+(.5+.4*s)+')'; ctx.fillText(NB[i].n||'',x,y+R*1.55+14)}
+    GLH.push([x,y,R*1.2,i]);
+  });
+  ctx.restore();
+}
+/* --- 행성 내부 --- */
+function skyColors(sk){return sk===1?['#2A1F5A','#C0507A','#FFB26B']:sk===2?['#06142E','#0B4A5A','#2FBF9A']:['#030818','#0A1B45','#16337A']}
+function blob(c,x,y,r,col){c.fillStyle=col; c.beginPath(); c.arc(x,y,r,0,6.2832); c.fill()}
+function tri(c,col,x,top,hw,bot){c.fillStyle=col; c.beginPath(); c.moveTo(x,top); c.lineTo(x+hw,bot); c.lineTo(x-hw,bot); c.closePath(); c.fill()}
+function deco(k,x,y,u,t,P,i){
+  var c=ctx; c.save(); c.translate(x,y);
+  c.fillStyle='rgba(0,0,0,.28)'; c.beginPath(); c.ellipse(0,0,u*.4,u*.09,0,0,6.2832); c.fill();
+  if(k===0){c.fillStyle='#6B4A32'; c.fillRect(-u*.06,-u*.55,u*.12,u*.55); blob(c,0,-u*.88,u*.36,'#3FA866'); blob(c,-u*.2,-u*.66,u*.26,'#52C27A'); blob(c,u*.22,-u*.67,u*.25,'#52C27A')}
+  else if(k===1){c.fillStyle='#5A3E2B'; c.fillRect(-u*.05,-u*.2,u*.1,u*.2); tri(c,'#2F8F5B',0,-u*1.1,u*.3,-u*.55); tri(c,'#37A56A',0,-u*.85,u*.38,-u*.28); tri(c,'#40B878',0,-u*.55,u*.46,-u*.05)}
+  else if(k===2){c.strokeStyle='#3FA866'; c.lineWidth=u*.04; c.beginPath(); c.moveTo(0,0); c.lineTo(0,-u*.4); c.stroke(); var pc=['#FF8FB3','#FFD36B','#C9A8FF'][i%3]; for(var q=0;q<5;q++){var a=q*1.2566; blob(c,Math.cos(a)*u*.1,-u*.45+Math.sin(a)*u*.1,u*.09,pc)} blob(c,0,-u*.45,u*.06,'#FFF3B0')}
+  else if(k===3){c.fillStyle='#E6D6BE'; c.fillRect(-u*.34,-u*.42,u*.68,u*.42); tri(c,'#B5524A',0,-u*.85,u*.46,-u*.4); c.fillStyle='#6B4A32'; c.fillRect(-u*.07,-u*.26,u*.14,u*.26); c.save(); c.globalCompositeOperation='lighter'; c.fillStyle='rgba(255,210,120,.9)'; c.fillRect(u*.12,-u*.34,u*.14,u*.12); c.restore()}
+  else if(k===4){c.fillStyle='#4B5066'; c.fillRect(-u*.03,-u*.9,u*.06,u*.9); c.save(); c.globalCompositeOperation='lighter'; var g=c.createRadialGradient(0,-u*.95,0,0,-u*.95,u*.5); g.addColorStop(0,'rgba(255,230,150,.95)'); g.addColorStop(1,'rgba(255,200,90,0)'); c.fillStyle=g; c.beginPath(); c.arc(0,-u*.95,u*.5,0,6.2832); c.fill(); c.restore(); blob(c,0,-u*.95,u*.09,'#FFF6D0')}
+  else if(k===5){c.fillStyle='#CFC9BC'; c.fillRect(-u*.025,-u*1,u*.05,u*1); c.fillStyle=P[1]; c.beginPath(); c.moveTo(u*.025,-u*.98); for(var s=0;s<=6;s++)c.lineTo(u*.025+s*u*.07,-u*.98+Math.sin(t*3+s*.9)*u*.04); for(var s2=6;s2>=0;s2--)c.lineTo(u*.025+s2*u*.07,-u*.68+Math.sin(t*3+s2*.9)*u*.04); c.closePath(); c.fill()}
+  else if(k===6){c.save(); c.globalCompositeOperation='lighter'; var cg=c.createRadialGradient(0,-u*.4,0,0,-u*.4,u*.6); cg.addColorStop(0,'rgba(140,220,255,.5)'); cg.addColorStop(1,'rgba(140,220,255,0)'); c.fillStyle=cg; c.fillRect(-u*.6,-u,u*1.2,u*1.1); c.restore(); c.fillStyle='#7FD8FF'; c.beginPath(); c.moveTo(0,-u*.85); c.lineTo(u*.14,-u*.4); c.lineTo(0,0); c.lineTo(-u*.14,-u*.4); c.closePath(); c.fill(); c.fillStyle='#B49BFF'; c.beginPath(); c.moveTo(u*.18,-u*.5); c.lineTo(u*.3,-u*.22); c.lineTo(u*.16,0); c.lineTo(u*.08,-u*.25); c.closePath(); c.fill()}
+  else if(k===7){tri(c,'#E9A23B',0,-u*.7,u*.45,0); tri(c,'#7A4A1E',u*.02,-u*.4,u*.14,0)}
+  else if(k===8){c.fillStyle='#5A3E2B'; c.fillRect(-u*.2,-u*.07,u*.4,u*.07); c.save(); c.globalCompositeOperation='lighter'; var fg=c.createRadialGradient(0,-u*.25,0,0,-u*.25,u*.55); fg.addColorStop(0,'rgba(255,170,60,.7)'); fg.addColorStop(1,'rgba(255,120,30,0)'); c.fillStyle=fg; c.beginPath(); c.arc(0,-u*.25,u*.55,0,6.2832); c.fill(); c.restore(); var fl2=1+.15*Math.sin(t*14+i); c.fillStyle='#FF9A3C'; c.beginPath(); c.ellipse(0,-u*.2,u*.12*fl2,u*.22*fl2,0,0,6.2832); c.fill(); c.fillStyle='#FFE08A'; c.beginPath(); c.ellipse(0,-u*.16,u*.06,u*.12*fl2,0,0,6.2832); c.fill()}
+  else if(k===9){c.fillStyle='#D8CFC0'; c.beginPath(); c.moveTo(-u*.16,0); c.lineTo(-u*.09,-u*.8); c.lineTo(u*.09,-u*.8); c.lineTo(u*.16,0); c.closePath(); c.fill(); c.save(); c.translate(0,-u*.8); c.rotate(t*.8+i); c.fillStyle='#F2EBDD'; for(var b=0;b<4;b++){c.rotate(1.5708); c.fillRect(-u*.03,-u*.55,u*.06,u*.55)} c.restore(); blob(c,0,-u*.8,u*.05,'#8A7A66')}
+  else if(k===10){c.fillStyle='#7C8497'; c.beginPath(); c.moveTo(-u*.36,0); c.lineTo(-u*.28,-u*.28); c.lineTo(-u*.05,-u*.4); c.lineTo(u*.25,-u*.3); c.lineTo(u*.36,0); c.closePath(); c.fill(); c.fillStyle='#98A0B3'; c.beginPath(); c.moveTo(-u*.05,-u*.4); c.lineTo(u*.25,-u*.3); c.lineTo(u*.1,-u*.12); c.closePath(); c.fill()}
+  else{var wg=c.createLinearGradient(0,-u*.2,0,u*.1); wg.addColorStop(0,P[1]); wg.addColorStop(1,P[2]); c.fillStyle=wg; c.beginPath(); c.ellipse(0,-u*.02,u*.55,u*.17,0,0,6.2832); c.fill(); c.strokeStyle='rgba(255,255,255,.45)'; c.lineWidth=1; for(var r2=0;r2<2;r2++){var pr=((t*.5+r2*.5+i*.13)%1); c.globalAlpha=1-pr; c.beginPath(); c.ellipse(0,-u*.02,u*(.1+.4*pr),u*(.03+.12*pr),0,0,6.2832); c.stroke()} c.globalAlpha=1}
+  c.restore();
+}
+function hillLayer(par,amp,fr,col,base,hz,w){
+  ctx.fillStyle=col; ctx.beginPath(); ctx.moveTo(0,hz+2);
+  for(var x=0;x<=w+16;x+=16){var y=hz-base+Math.sin((x+intScroll*par)*fr)*amp+Math.sin((x+intScroll*par)*fr*2.3+1.7)*amp*.4; ctx.lineTo(x,y)}
+  ctx.lineTo(w+16,hz+2); ctx.closePath(); ctx.fill();
+}
+function decPos(i){var gb=H*.56, gh=H-gb; return {x:INT.d[i+1]/1000*W*2.4-intScroll, y:gb+gh*(.1+.8*INT.d[i+2]/1000), u:H*.115*(.55+.95*INT.d[i+2]/1000)}}
+function drawInterior(t,dt,ie){
+  var info=document.getElementById('intinfo'), bar=document.getElementById('decbar');
+  if(info)info.classList.toggle('on',ie>.8&&!!INT.pl); if(bar)bar.classList.toggle('on',ie>.8&&INT.edit);
+  if(ie<.01||!INT.pl)return;
+  var P=PLP[(INT.pl.p|0)%6], w=W, h=H, hz=h*.56, gh=h-hz, sk=INT.sk|0;
+  intScroll=clamp(intScroll,0,w*1.4);
+  ctx.save(); ctx.scale(dpr,dpr); ctx.globalAlpha=ie;
+  var sc=skyColors(sk), g=ctx.createLinearGradient(0,0,0,hz); g.addColorStop(0,sc[0]); g.addColorStop(.65,sc[1]); g.addColorStop(1,sc[2]); ctx.fillStyle=g; ctx.fillRect(0,0,w,hz+2);
+  for(var i=0;i<SKYSTARS.length;i++){var s=SKYSTARS[i], sx=((s[0]*w*1.3-intScroll*.05)%w+w)%w, sy=s[1]*hz*.8, tw=.5+.5*Math.sin(t*1.5+s[3]); ctx.fillStyle='rgba(255,255,255,'+((sk===1?.22:.8)*tw)+')'; ctx.fillRect(sx,sy,s[2],s[2])}
+  if(sk===2){ctx.save(); ctx.globalCompositeOperation='lighter'; for(var b=0;b<3;b++){ctx.beginPath(); ctx.moveTo(0,hz*.5); for(var x=0;x<=w;x+=20){ctx.lineTo(x,hz*(.28+.08*b)+Math.sin(x*.006+t*.5+b*2-intScroll*.0015)*hz*.07)} ctx.lineTo(w,hz*(.62+.06*b)); ctx.lineTo(0,hz*(.62+.06*b)); ctx.closePath(); ctx.fillStyle='rgba('+(b?'80,255,190':'120,200,255')+',.16)'; ctx.fill()} ctx.restore()}
+  else{var mx=w*(sk===1?.72:.2)-intScroll*.08, my=sk===1?hz-28:hz*.22, mr=sk===1?46:26, mg=ctx.createRadialGradient(mx,my,0,mx,my,mr*3); mg.addColorStop(0,sk===1?'rgba(255,220,150,.95)':'rgba(235,242,255,.9)'); mg.addColorStop(.3,sk===1?'rgba(255,170,100,.4)':'rgba(180,200,255,.25)'); mg.addColorStop(1,'rgba(255,255,255,0)'); ctx.fillStyle=mg; ctx.fillRect(mx-mr*3,my-mr*3,mr*6,mr*6); blob(ctx,mx,my,mr*.55,sk===1?'#FFE2A8':'#F2F6FF')}
+  hillLayer(.2,hz*.045,.004,shade(P[2],.32),hz*.08,hz,w);
+  hillLayer(.45,hz*.05,.007,shade(P[2],.52),hz*.03,hz,w);
+  var gg=ctx.createLinearGradient(0,hz,0,h); gg.addColorStop(0,shade(P[2],.9)); gg.addColorStop(1,shade(P[3],.8)); ctx.fillStyle=gg; ctx.fillRect(0,hz,w,gh);
+  for(var gi=0;gi<SKYSTARS.length;gi++){var gs=SKYSTARS[gi], gx=gs[0]*w*2.4-intScroll, gy=hz+gs[1]*gh*.95; if(gx<-30||gx>w+30)continue; ctx.fillStyle=(gi%2)?'rgba(0,0,0,.09)':'rgba(255,255,255,.07)'; ctx.beginPath(); ctx.ellipse(gx,gy,4+gs[2]*8*(.4+gs[1]),1.2+gs[1]*2.4,0,0,6.2832); ctx.fill()}
+  var hh=ctx.createLinearGradient(0,hz-6,0,hz+40); hh.addColorStop(0,'rgba(255,255,255,.14)'); hh.addColorStop(1,'rgba(255,255,255,0)'); ctx.fillStyle=hh; ctx.fillRect(0,hz-6,w,46);
+  /* 지나가는 방문자 우주선 */
+  var vs=visAll(); for(var v=0;v<vs.length;v++){var q=vs[v], vx=((t*(18+v*5)+v*260)%(w+260))-130, vy=hz*(.16+((v*37)%40)/100)+Math.sin(t*.8+v)*6, sh_=q.sh||{h:0,c:0,f:0,e:0};
+    if(q.live){ctx.strokeStyle='rgba(120,255,200,'+(.35+.3*Math.sin(t*3))+')'; ctx.lineWidth=1.4; ctx.beginPath(); ctx.arc(vx,vy,16,0,6.2832); ctx.stroke()}
+    drawShip(vx,vy,0,20,{h:sh_.h|0,c:sh_.c|0,f:sh_.f|0,e:sh_.e|0},t,.8);
+    ctx.fillStyle=q.live?'rgba(150,255,215,.95)':'rgba(222,238,255,.8)'; ctx.font='10.5px Pretendard Variable, sans-serif'; ctx.textAlign='center'; ctx.fillText((q.live?'● ':'')+(q.n||''),vx,vy+22)}
+  if(VIEW.on&&!INT.edit)drawShip(w*.36+Math.sin(t*.5)*26,hz*.4+Math.sin(t*.8)*8,.15,26,ME.sh,t,.9);
+  /* 꾸밈 아이템 */
+  var order=[]; for(var di=0;di<INT.d.length;di+=3)order.push(di); order.sort(function(p,q){return INT.d[p+2]-INT.d[q+2]});
+  order.forEach(function(di,idx){var pp=decPos(di); if(pp.x<-140||pp.x>w+140)return; deco(INT.d[di]|0,pp.x,pp.y,pp.u,t,P,idx)});
+  if(INT.edit&&typeof decTool==='number'&&iDrag===null){var gx=(tx3+.5)*W, gy=(ty3+.5)*H; if(gy>hz+gh*.1){ctx.globalAlpha=ie*.5; deco(decTool,gx,gy,H*.115*(.55+.95*clamp(((gy-hz)/gh-.1)/.8,0,1)),t,P,0)}}
+  ctx.restore();
+}
+function setIntInfo(){
+  var el=document.getElementById('intinfo'); if(!el)return;
+  if(INT.edit){el.querySelector('b').textContent='내 행성 안'; el.querySelector('small').textContent='아이템을 고른 뒤 땅을 눌러 놓아 보세요. 놓은 것은 끌어서 옮길 수 있어요.'}
+  else{el.querySelector('b').textContent=(INT.pl&&INT.pl.n)||'이름 없는 행성'; el.querySelector('small').textContent='주인 '+(INT.owner||'여행자')+(INT.w?'  ·  '+INT.w:'')+'  ·  끌어서 둘러보세요'}
+}
+function decChanged(){saveMe(); var c=document.getElementById('dec-cnt'); if(c)c.textContent=(INT.d.length/3)+'/24'}
+function openEdit(){
+  var pl=ME.pl; pl.d=pl.d||[]; pl.sk=pl.sk|0; pl.w=pl.w||'';
+  INT={uid:FB.user?FB.user.uid:'me',pl:pl,d:pl.d,sk:pl.sk,w:pl.w,owner:nick(),edit:true}; intScroll=0; intTarget=1; decTool=0;
+  plPanel.classList.remove('on'); plHint.classList.remove('on'); document.getElementById('back').textContent='완료';
+  document.getElementById('dec-w').value=pl.w; refreshDec(); setIntInfo();
+}
+function finishEdit(){
+  ME.pl.d=INT.d; ME.pl.sk=INT.sk; ME.pl.w=INT.w; saveMe(); intTarget=0; INT.edit=false;
+  plPanel.classList.add('on'); plHint.classList.add('on'); document.getElementById('back').textContent='돌아가기'; toast('행성 안을 저장했어요.'+(ME.pl.v==='me'?' 공개로 바꾸면 다른 사람이 둘러볼 수 있어요.':''));
+}
+function refreshDec(){
+  [].forEach.call(document.querySelectorAll('#dec-items button'),function(b,i){b.classList.toggle('on',decTool===i)});
+  [].forEach.call(document.querySelectorAll('#dec-sky button'),function(b,i){b.classList.toggle('on',INT.sk===i)});
+  document.getElementById('dec-er').classList.toggle('on',decTool==='erase'); document.getElementById('dec-cnt').textContent=(INT.d.length/3)+'/24';
+}
+function buildInt(){
+  var it=document.getElementById('dec-items'), sk=document.getElementById('dec-sky');
+  DEC_NAMES.forEach(function(n,i){var b=document.createElement('button'); b.type='button'; b.textContent=n; b.addEventListener('click',function(){decTool=i; refreshDec()}); it.appendChild(b)});
+  SKYN.forEach(function(n,i){var b=document.createElement('button'); b.type='button'; b.textContent=n; b.addEventListener('click',function(){INT.sk=i; ME.pl.sk=i; saveMe(); refreshDec()}); sk.appendChild(b)});
+  document.getElementById('dec-er').addEventListener('click',function(){decTool=(decTool==='erase')?0:'erase'; refreshDec()});
+  document.getElementById('dec-un').addEventListener('click',function(){if(INT.d.length>=3){INT.d.splice(INT.d.length-3,3); decChanged(); refreshDec()}});
+  document.getElementById('dec-ok').addEventListener('click',finishEdit);
+  document.getElementById('dec-w').addEventListener('input',function(e){INT.w=e.target.value.slice(0,30); ME.pl.w=INT.w; saveMe()});
+  document.getElementById('plin').addEventListener('click',openEdit);
+  document.getElementById('gal-l').addEventListener('click',function(){gGoal=clamp(gGoal-1,0,Math.max(0,NB.length-1))});
+  document.getElementById('gal-r').addEventListener('click',function(){gGoal=clamp(gGoal+1,0,Math.max(0,NB.length-1))});
+  document.getElementById('gal-go').addEventListener('click',function(){if(galFocus>-1)visitPlanet(NB[galFocus])});
+  cv.addEventListener('pointerdown',function(e){
+    if(galTarget&&galT>.5&&intT<.3){gDrag={x:e.clientX,g:gGoal}; gDragMoved=false; return}
+    if(!intTarget||intT<.7)return;
+    var hz=H*.56, gh=H-hz;
+    if(INT.edit){
+      var hit=-1; for(var i=INT.d.length-3;i>=0&&hit<0;i-=3){var pp=decPos(i); if(Math.abs(e.clientX-pp.x)<pp.u*.5&&Math.abs(e.clientY-(pp.y-pp.u*.5))<pp.u*.65)hit=i}
+      if(decTool==='erase'){if(hit>-1){INT.d.splice(hit,3); decChanged(); refreshDec()} return}
+      if(hit>-1){iDrag={mode:'move',i:hit}; cv.setPointerCapture(e.pointerId); return}
+      if(typeof decTool==='number'&&e.clientY>hz+gh*.1){
+        if(INT.d.length>=72){toast('아이템은 24개까지 놓을 수 있어요.'); return}
+        INT.d.push(decTool,clamp(Math.round((e.clientX+intScroll)/(W*2.4)*1000),0,1000),Math.round(clamp(((e.clientY-hz)/gh-.1)/.8,0,1)*1000)); decChanged(); refreshDec(); return;
+      }
+    }
+    iDrag={mode:'pan',x:e.clientX,s:intScroll}; cv.setPointerCapture(e.pointerId);
+  });
+  cv.addEventListener('pointermove',function(e){
+    if(gDrag){var dx=e.clientX-gDrag.x; if(Math.abs(dx)>6)gDragMoved=true; if(NB.length)gGoal=clamp(gDrag.g-dx/gSp(),0,NB.length-1)}
+    if(iDrag){
+      if(iDrag.mode==='pan')intScroll=clamp(iDrag.s-(e.clientX-iDrag.x),0,W*1.4);
+      else{var hz=H*.56, gh=H-hz; INT.d[iDrag.i+1]=clamp(Math.round((e.clientX+intScroll)/(W*2.4)*1000),0,1000); INT.d[iDrag.i+2]=Math.round(clamp(((e.clientY-hz)/gh-.1)/.8,0,1)*1000)}
+    }
+  });
+  cv.addEventListener('pointerup',function(){
+    if(gDrag){if(gDragMoved)gGoal=Math.round(gGoal); gDrag=null; setTimeout(function(){gDragMoved=false},0)}
+    if(iDrag){if(iDrag.mode==='move')decChanged(); iDrag=null}
+  });
+  cv.addEventListener('wheel',function(e){
+    if(galTarget&&galT>.5&&intT<.3){if(NB.length)gGoal=clamp(gGoal+((e.deltaY>0||e.deltaX>0)?.5:-.5),0,NB.length-1); e.preventDefault()}
+    else if(intTarget&&intT>.5){intScroll=clamp(intScroll+(e.deltaX||e.deltaY),0,W*1.4); e.preventDefault()}
+  },{passive:false});
+}
+
 /* 별 속으로 들어갈 때 터지는 빛 */
 function bloom(cx,cy,R,e,col){
   var b=sm(.3,.72,e)*(1-sm(.8,1,e)); if(b<.01)return;
@@ -1119,6 +1315,10 @@ function frame(now){
   px3+=(tx3-px3)*.025; py3+=(ty3-py3)*.025;
   if(plT!==plTarget){plT=plTarget>plT?Math.min(1,plT+dt/(reduce?.4:1.1)):Math.max(0,plT-dt/(reduce?.4:.9))}
   var pe=ease(plT);
+  if(galT!==galTarget){galT=galTarget>galT?Math.min(1,galT+dt/(reduce?.4:1.7)):Math.max(0,galT-dt/(reduce?.4:1.2))}
+  if(intT!==intTarget){intT=intTarget>intT?Math.min(1,intT+dt/(reduce?.4:1.1)):Math.max(0,intT-dt/(reduce?.4:.9))}
+  var ge=ease(galT), ie=ease(intT);
+  if(galTarget&&galT<1)flightWarp+=Math.sin(Math.PI*clamp(galT,0,1))*dt*2.6;
   var e=ease(prog), Wd=cv.width, Hd=cv.height, cx=mcx*dpr, cy=mcy*dpr;
   ctx.clearRect(0,0,Wd,Hd);
 
@@ -1157,11 +1357,14 @@ function frame(now){
     var sv=SERV[i], local=clamp((e-.42-i*.05)/(.58-i*.05),0,1), qe=1-Math.pow(1-local,3);
     if(local<=0)continue;
     sv.hv+=((hot===i?1:0)-sv.hv)*.12;
-    var px=cx+(sv.fx*dpr-cx)*qe, py=cy+(sv.fy*dpr-cy)*qe, sc=(.2+.8*qe)*(1+.08*sv.hv);
-    drawGal(sv.g,px,py,sv.R*dpr*sc,sv.tilt,sv.inc,reduce?sv.seed:t*.07*sv.dir+sv.seed,qe*(1+.35*sv.hv)*(1-pe),1,t+sv.seed*3);
+    var px=cx+(sv.fx*dpr-cx)*qe, py=cy+(sv.fy*dpr-cy)*qe, sc=(.2+.8*qe)*(1+.08*sv.hv), ga=1;
+    if(ge>0){var P3=SERV[3], tx_=cx+(P3.fx*dpr-cx), ty_=cy+(P3.fy*dpr-cy), zz=1+ge*ge*16; px=tx_+(px-tx_)*zz; py=ty_+(py-ty_)*zz; sc*=zz; ga=(i===3)?(1-sm(.45,1,ge)):(1-sm(0,.5,ge))}
+    drawGal(sv.g,px,py,sv.R*dpr*sc,sv.tilt,sv.inc,reduce?sv.seed:t*.07*sv.dir+sv.seed,qe*(1+.35*sv.hv)*(1-pe)*ga,1,t+sv.seed*3);
   }
-  drawPlanetLayer(cx,cy,e,pe,t,dt);
-  if(prog>=1&&target===1&&plTarget===0&&plT<.02&&!labelsEl.classList.contains('on'))labelsEl.classList.add('on');
+  if(ie<.05)drawPlanetLayer(cx,cy,e*(1-ge),pe,t,dt); else if(plNameEl)plNameEl.style.opacity=0;
+  drawGallery(t,dt,ge,ie);
+  drawInterior(t,dt,ie);
+  if(prog>=1&&target===1&&plTarget===0&&plT<.02&&galTarget===0&&galT<.02&&!labelsEl.classList.contains('on'))labelsEl.classList.add('on');
   requestAnimationFrame(frame);
 }
 
@@ -1179,18 +1382,34 @@ function hitMini(px,py){
   return best;
 }
 cv.addEventListener('pointermove',function(e){
+  if(intT>.02||intTarget){return}
+  if(galT>.02||galTarget){cv.classList.toggle('go',glAt(e.clientX,e.clientY)>-1);return}
   if(target===0&&prog===0){cv.classList.toggle('go',introT>.7&&(nearMe(e.clientX,e.clientY)||hitMain(e.clientX,e.clientY)))}
   else if(prog===1&&plTarget===0){var h=hitMini(e.clientX,e.clientY);hot=h;cv.classList.toggle('go',h>-1||nearPl(e.clientX,e.clientY))}
   else if(prog===1&&plTarget===1&&!VIEW.on){cv.classList.toggle('go',nbAt(e.clientX,e.clientY)>-1)}
 });
 cv.addEventListener('pointerleave',function(){if(prog===1)hot=-1;cv.classList.remove('go')});
 cv.addEventListener('click',function(e){
+  if(intT>.02||intTarget)return;
+  if(galT>.02||galTarget){
+    if(gDragMoved)return;
+    var gi=glAt(e.clientX,e.clientY); if(gi>-1){if(Math.abs(gi-gScroll)<.5)visitPlanet(NB[gi]); else gGoal=gi}
+    return;
+  }
   if(target===0){ var sa=(prog===0&&introT>.7)?starAt(e.clientX,e.clientY):-1; if(sa>-1)openActs({uid:STARS[sa].id,name:STARS[sa].n,tp:'star',label:(STARS[sa].n||'이름 없는 별')+' · 별'}); else if(prog===0&&introT>.7&&(nearMe(e.clientX,e.clientY)||hitMain(e.clientX,e.clientY)))enter() }
   else if(prog===1&&plTarget===0){var h=hitMini(e.clientX,e.clientY); if(h>-1)explore(h); else if(nearPl(e.clientX,e.clientY))openPlanet()}
   else if(prog===1&&plTarget===1&&!VIEW.on){var ni=nbAt(e.clientX,e.clientY); if(ni>-1)visitPlanet(NB[ni])}
 });
 cv.addEventListener('keydown',function(e){ if(target===0&&(e.key==='Enter'||e.key===' ')){e.preventDefault();enter()} });
-addEventListener('keydown',function(e){ if(e.key==='Escape')backAct() });
+addEventListener('keydown',function(e){
+  if(e.key==='Escape'){backAct();return}
+  var tg=e.target&&e.target.tagName; if(tg==='INPUT'||tg==='TEXTAREA')return;
+  if(e.key==='ArrowLeft'||e.key==='ArrowRight'){
+    var dir=e.key==='ArrowRight'?1:-1;
+    if(intTarget&&intT>.5)intScroll=clamp(intScroll+dir*160,0,W*1.4);
+    else if(galTarget&&galT>.5)gGoal=clamp(gGoal+dir,0,Math.max(0,NB.length-1));
+  }
+});
 document.getElementById('back').addEventListener('click',backAct);
 addEventListener('resize',layout);
 addEventListener('pointermove',function(e){tx3=e.clientX/innerWidth-.5;ty3=e.clientY/innerHeight-.5},{passive:true});
@@ -1202,7 +1421,7 @@ init(); layout(); paintTag(false);
   lb.addEventListener('click',function(e){e.stopPropagation(); if(FB.user)um.classList.toggle('on'); else doLogin()});
   document.getElementById('logout').addEventListener('click',doLogout);
   document.getElementById('umk').addEventListener('click',function(){um.classList.remove('on'); openStar()});
-  buildMk();
+  buildMk(); buildInt();
   document.getElementById('plogin').addEventListener('click',doLogin);
   document.addEventListener('click',function(e){if(!um.contains(e.target))um.classList.remove('on')});
   try{if(localStorage.getItem('lhy.auth')==='1')fbLoad().catch(function(){})}catch(e){}
