@@ -939,7 +939,7 @@ function drawRing(x,y,R,c,back){
   var T=performance.now()/1000*(reduce?.25:1), dir=c.sp<0?-1:1, ca=Math.cos(c.ax), sa=Math.sin(c.ax), pa=ringParts(c.r), n=Math.min(pa.length,Math.max(80,R*4|0)), ps=Math.max(.8,R/85),
       cb=hx3(base), ch=hx3(hi), a0=ctx.globalAlpha;
   ctx.save(); if(glow)ctx.globalCompositeOperation='lighter';
-  for(var k=0;k<n;k++){var p=pa[k], rr=1+(p.r-1)*sz, th=p.th+dir*T*.55*Math.pow(rr,-1.5), sn=Math.sin(th);
+  for(var k=0;k<n;k++){var p=pa[k], rr=1+(p.r-1)*sz, th=p.th+dir*T*.09*Math.pow(rr,-1.5), sn=Math.sin(th);
     if((sn<0)!==back)continue;
     var ox=Math.cos(th)*rr*R, oy=sn*rr*R*fl, px=x+ox*ca-oy*sa, py=y+ox*sa+oy*ca, col=p.ice?mix3(ch,[255,255,255],.5):(p.alt?ch:cb), lm=p.lum*(back?.7:1);
     /* 빛은 왼쪽 위에서 온다: 행성 뒤 오른쪽으로 드리운 그림자 속 조각은 어둡게 */
