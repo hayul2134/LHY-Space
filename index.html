@@ -305,7 +305,7 @@ function explore(i){
   var nm=SERV[i].key||SERV[i].name, isNew=ME.sv.indexOf(nm)<0;
   if(isNew){ME.sv.push(nm);saveMe();paintTag(true)}
   if(i===3){openGallery(); return}
-openSpace(i); if(isNew)setTimeout(function(){toast('내 별자리에 별이 하나 켜졌어요.')},1600);
+  openSpace(i);
 }
 
 function gauss(){var u=0,v=0;while(!u)u=rnd();while(!v)v=rnd();return Math.sqrt(-2*Math.log(u))*Math.cos(6.2832*v)}
