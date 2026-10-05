@@ -1074,7 +1074,7 @@ function updateGalHud(){
 function galFx(cx,cy){
   var g=galT, tt=document.getElementById('galtitle');
   var b=Math.sin(Math.PI*clamp((g-.1)/.66,0,1));
-  if(tt){var tb=galI===3?Math.sin(Math.PI*clamp((g-.28)/.5,0,1)):(galTarget?sm(.4,.85,g):sm(.3,.8,g)); tt.style.opacity=Math.pow(Math.max(0,tb),1.3); tt.style.transform='translate(-50%,'+(10-10*tb)+'px)'}
+  if(tt){var tb=galI===3?0:(galTarget?sm(.4,.85,g):sm(.3,.8,g)); tt.style.opacity=Math.pow(Math.max(0,tb),1.3); tt.style.transform='translate(-50%,'+(10-10*tb)+'px)'}
   if(g<=.01||b<=.005)return;
   var P3=SERV[galI], gx=P3.fx*dpr, gy=P3.fy*dpr, wd=cv.width, hd=cv.height, diag=Math.sqrt(wd*wd+hd*hd), pr=clamp(g/.85,0,1);
   ctx.save(); ctx.globalCompositeOperation='lighter';
